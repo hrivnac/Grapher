@@ -1,0 +1,13 @@
+/ant/Notes.txt
+/ant/db
+/ant/log
+/lib/*
+/build/*
+/run/*
+/doc/*
+/dosrc/*
+/dist/*
+**/*~
+**/*.log
+**/.zshhistory
+**/#*
