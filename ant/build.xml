@@ -15,6 +15,8 @@
   <path id="classpath.build">
     <pathelement path="${log4j_jar}"/>
     <pathelement path="${cli_jar}"/>
+    <pathelement path="${jgrapht_core_jar}"/>
+    <pathelement path="${jgrapht_io_jar}"/>
     <fileset dir="../extlib">
       <include name="*.jar"/>
       </fileset>
@@ -60,25 +62,25 @@
     <copy todir="../extlib/import">
 			<fileset file="${log4j_jar}"/>
 			<fileset file="${cli_jar}"/>
-      <fileset file="${antlr4-runtime_jar}"/>
+      <fileset file="${antlr4_runtime_jar}"/>
       <fileset file="${lang3_jar}"/>
       <fileset file="${math3_jar}"/>
       <fileset file="${text_jar}"/>
       <fileset file="${dsiutils_jar}"/>
       <fileset file="${fastutil_jar}"/>
       <fileset file="${guava_jar}"/>
-      <fileset file="${jgrapht-core_jar}"/>
-      <fileset file="${jgrapht-ext_jar}"/>
-      <fileset file="${jgrapht-guava_jar}"/>
-      <fileset file="${jgrapht-io_jar}"/>
-      <fileset file="${jgrapht-opt_jar}"/>
-      <fileset file="${jgrapht-unimi-dsi_jar}"/>
+      <fileset file="${jgrapht_core_jar}"/>
+      <fileset file="${jgrapht_ext_jar}"/>
+      <fileset file="${jgrapht_guava_jar}"/>
+      <fileset file="${jgrapht_io_jar}"/>
+      <fileset file="${jgrapht_opt_jar}"/>
+      <fileset file="${jgrapht_unimi_dsi_jar}"/>
       <fileset file="${jgraphx_jar}"/>
       <fileset file="${jheaps_jar}"/>
       <fileset file="${jsap_jar}"/>
-      <fileset file="${logback-classic_jar}"/>
-      <fileset file="${logback-core_jar}"/>
-      <fileset file="${slf4j-api_jar}"/>
+      <fileset file="${logback_classic_jar}"/>
+      <fileset file="${logback_core_jar}"/>
+      <fileset file="${slf4j_api_jar}"/>
       <fileset file="${sux4j_jar}"/>
       <fileset file="${webgraph_jar}"/>
       <fileset file="${webgraph_jar}"/>
@@ -96,8 +98,8 @@
            debug="yes"
            debuglevel="lines,vars,source"
            optimize="yes"
-           source="8"
-           target="8">
+           source="11"
+           target="11">
       <src path="../src/java"/>
       <src path="../build"/>
       <classpath>
@@ -126,11 +128,24 @@
       <fileset dir="../src/java" includes="**/*.png"/>
       <fileset dir="../src/java" includes="**/*.gif"/>
       <fileset dir="../src/java" includes="**/*.css"/>
-      <zipfileset includes="**/*" src="${log4j_jar}" excludes="META-INF/*"/>
      <manifest>
         <attribute name="Created-By" value="${user.name}"/>
         <attribute name="AppName"    value="Grapher"/>
         <attribute name="AppVersion" value="${version} ${TSTAMP}"/>
+        </manifest>
+      </jar>
+    <jar jarfile="../lib/Grapher.exe.jar" index="yes">
+      <zipfileset includes="**/*" src="../lib/Grapher-${version}.jar" excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${log4j_jar}"                  excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${cli_jar}"                    excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${jgrapht_core_jar}"           excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${jgrapht_io_jar}"             excludes="META-INF/*"/>
+      <manifest>
+        <attribute name="Created-By" value="${user.name}"/>
+        <attribute name="AppName"    value="Grapher"/>
+        <attribute name="AppVersion" value="${version} ${TSTAMP}"/>
+        <!--attribute name="Main-Class" value="com.Grapher.Tests.HelloJGraphT"/-->
+        <attribute name="Main-Class" value="com.Grapher.Apps.CLI"/>
         </manifest>
       </jar>
     </target>
@@ -205,8 +220,10 @@
       <Header><![CDATA[<center>]]>Grapher version: ${version}<![CDATA[</center>]]></Header>
       <Footer><![CDATA[<center>Written by: <a href='http://cern.ch/hrivnac'>J.Hrivnac</a></center>]]></Footer>
       <bottom><![CDATA[<a href='https://cern.ch/hrivnac/Activities/Packages/Grapher'>Documentation</a>]]> built ${TODAY} on ${os.name} by ${user.name}</bottom>
-      <group title="Utils" packages="com.Grapher.Apps*"/>
-      <group title="Utils" packages="com.Grapher.Utils*"/>
+      <group title="Apps"       packages="com.Grapher.Apps*"/>
+      <group title="Convertors" packages="com.Grapher.Convertors*"/>
+      <group title="Utils"      packages="com.Grapher.Utils*"/>
+      <group title="Tests"      packages="com.Grapher.Tests*"/>
       <link href="http://docs.oracle.com/javase/11/docs/api" packagelistLoc="${javadoc}" offline="true"/>
       <link href="https://commons.apache.org/proper/commons-cli/apidocs"/>
       <link href="https://logging.apache.org/log4j/1.2/apidocs"/>
