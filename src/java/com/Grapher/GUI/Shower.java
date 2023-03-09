@@ -2,34 +2,21 @@ package com.Grapher.GUI;
 
 import com.Grapher.CustomGraph.CustomEdge;
 import com.Grapher.CustomGraph.CustomVertex;
-import com.Grapher.CustomGraph.CustomVertexSupplier;
 
 // JGraphT
-import org.jgrapht.*;
-import org.jgrapht.graph.*;
-import org.jgrapht.graph.builder.*;
-import org.jgrapht.nio.*;
-import org.jgrapht.nio.graphml.*;
-import org.jgrapht.nio.dot.*;
-import org.jgrapht.nio.graph6.*;
-import org.jgrapht.nio.matrix.*;
-import org.jgrapht.util.*;
-import org.jgrapht.ext.*;
+import org.jgrapht.Graph;
+import org.jgrapht.ListenableGraph;
+import org.jgrapht.graph.DefaultListenableGraph;
+import org.jgrapht.ext.JGraphXAdapter;
 
 // JGraphX
-import com.mxgraph.layout.*;
-import com.mxgraph.swing.*;
+import com.mxgraph.layout.mxCircleLayout;
+import com.mxgraph.swing.mxGraphComponent;
 
 // Java
-import java.io.*;
-import java.nio.charset.*;
-import java.util.*;
-import java.net.URI;
-import javax.swing.*;
-import java.awt.*;
-
-// Log4J
-import org.apache.log4j.Logger;
+import java.awt.Dimension;
+import javax.swing.JFrame;
+import javax.swing.JApplet;
 
 /** <code>Shower</code> shows Graph in a graphical window.
   * Adapted  from
@@ -41,6 +28,7 @@ import org.apache.log4j.Logger;
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class Shower extends JApplet{
   
+  /** Create {@link JApplet}. */ 
   public Shower() {
     init();
     JFrame frame = new JFrame();
@@ -51,6 +39,8 @@ public class Shower extends JApplet{
     frame.setVisible(true);
     }
   
+  /** Show {@link Graph}.
+    * @param graph The {@link Graph} to show. */
   public void show(Graph<CustomVertex, CustomEdge> graph) {
     ListenableGraph<CustomVertex, CustomEdge> g = new DefaultListenableGraph<>(graph);
     jgxAdapter = new JGraphXAdapter<>(g);    

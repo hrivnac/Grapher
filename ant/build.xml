@@ -377,7 +377,7 @@
   <target name="cleanimports"
           description="Clean Unused Imports">
     <exec executable="../src/python/remove-unused-imports.py">
-      <arg line="../src/java/com/Lomikel"/>
+      <arg line="../src/java/com/Grapher"/>
       </exec>
     </target>
  

@@ -13,10 +13,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 
-// Java
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 // Log4J
 import org.apache.log4j.Logger;
 
@@ -28,6 +24,7 @@ import org.apache.log4j.Logger;
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class CLI {
 
+  /** Create and execute following command line arguments. */
   public static void main(String[] args) {
     CLI cli = new CLI();
     cli.parseArgs(args);
@@ -50,7 +47,7 @@ public class CLI {
     }
     
   /** Parse the cli arguments.
-    * @param args    The cli arguments. */
+    * @param args The cli arguments. */
   public void parseArgs(String[] args) {
     CommandLineParser parser = new BasicParser();
     Options options = new Options();

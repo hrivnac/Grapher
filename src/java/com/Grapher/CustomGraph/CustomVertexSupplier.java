@@ -3,9 +3,6 @@ package com.Grapher.CustomGraph;
 // Java
 import java.util.function.Supplier;
 
-// Log4J
-import org.apache.log4j.Logger;
-
 /** <code>CustomVertexSupplier</code> supplies {@link Supplier} for {@link CustomVertex}.
   * @opt attributes
   * @opt operations

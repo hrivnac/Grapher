@@ -5,28 +5,37 @@ import com.Grapher.CustomGraph.CustomVertex;
 import com.Grapher.CustomGraph.CustomVertexSupplier;
 
 // JGraphT
-import org.jgrapht.*;
-import org.jgrapht.graph.*;
-import org.jgrapht.graph.builder.*;
-import org.jgrapht.nio.*;
-import org.jgrapht.nio.graphml.*;
-import org.jgrapht.nio.dot.*;
-import org.jgrapht.nio.graph6.*;
-import org.jgrapht.nio.matrix.*;
-import org.jgrapht.util.*;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.AsUndirectedGraph;
+import org.jgrapht.graph.builder.GraphTypeBuilder;
+import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.DefaultAttribute;
+import org.jgrapht.nio.GraphExporter;
+import org.jgrapht.nio.ImportException;
+import org.jgrapht.nio.graphml.GraphMLImporter;
+import org.jgrapht.nio.dot.DOTExporter;
+import org.jgrapht.nio.graph6.Graph6Sparse6Exporter;
+import org.jgrapht.nio.matrix.MatrixExporter;
 
 // Java
-import java.io.*;
-import java.nio.charset.*;
-import java.util.*;
-import java.net.URI;
+import java.io.Writer;
+import java.io.StringWriter;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 // Log4J
 import org.apache.log4j.Logger;
 
 /** <code>Convertor</code> converts between Graph formats.
-  * Adapted  from
-  * <a href="https://github.com/jgrapht/jgrapht/blob/master/jgrapht-io/src/test/java/org/jgrapht/nio/graphml/GraphMLImporterTest.java">GraphMLImporterTest</a>.
   * @opt attributes
   * @opt operations
   * @opt types
@@ -45,7 +54,8 @@ public class Convertor {
     _outfile = outfile;
     }
     
-  /** TBD */
+  /** Read {@link Graph} from input file.
+    * @return The read {@link Graph}. */
   public Graph<CustomVertex, CustomEdge> read() {
     log.info("Reading " + _infile);
     try {
@@ -126,6 +136,9 @@ public class Convertor {
 
   // Writers -------------------------------------------------------------------
   
+  /** Represent {@link Graph} as a <em>DOT</em> string.
+    * @param graph The {@link Graph} to be written out.
+    * @return      The <em>DOT</em> representation of the {@link Graph}. */
   public String writeDOT(Graph<CustomVertex, CustomEdge> graph) {
     DOTExporter<CustomVertex, CustomEdge> exporter = new DOTExporter<>();
     exporter.setVertexAttributeProvider((v) -> {
@@ -143,6 +156,9 @@ public class Convertor {
     return writer.toString();
     }
     
+  /** Represent {@link Graph} as a <em>Graph6</em> string.
+    * @param graph The {@link Graph} to be written out.
+    * @return      The <em>Graph6</em> representation of the {@link Graph}. */
   public String writeGraph6(Graph<CustomVertex, CustomEdge> graph) throws UnsupportedEncodingException {
     Graph6Sparse6Exporter<CustomVertex, CustomEdge> exporter = new Graph6Sparse6Exporter<>(Graph6Sparse6Exporter.Format.GRAPH6);
     ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -150,6 +166,9 @@ public class Convertor {
     return new String(os.toByteArray(), "UTF-8");
     }  
     
+  /** Represent {@link Graph} as a <em>matrix</em> string.
+    * @param graph The {@link Graph} to be written out.
+    * @return      The <em>matrix</em> representation of the {@link Graph}. */
   public String writeMatrix(Graph<CustomVertex, CustomEdge> graph) {
     GraphExporter<CustomVertex, CustomEdge> exporter = new MatrixExporter<>();
     Writer writer = new StringWriter();

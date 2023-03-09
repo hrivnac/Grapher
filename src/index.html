@@ -39,13 +39,13 @@
 
 <h4><a name="CLI">Command Line</a></h4>
 <pre>
-$ java -jar ../lib/Grapher.exe.jar -h
+$ java -jar Grapher.exe.jar -h
 usage: java -jar Grapher.exe.jar
- -b,--batch           run in a batch
- -g,--gui             run in a graphical windowile
  -h,--help            show help
+ -i,--in <infile>     input file name [.graphml]
+ -o,--out <outfile>   output file name [.dot|.mat|.g6]
  -q,--quiet           minimal direct feedback
- -s,--source <file>   source bsh file (init.bsh is also read)
+ -s,--show            show in graphical window (instead of converting)
 </pre>
 
 <h4><a name="Bugs-ToDos">Bugs, Inconsistencies and ToDos</a></h4>
@@ -68,7 +68,7 @@ usage: java -jar Grapher.exe.jar
 <ul>
 <li><u>00.00.00:</u>
     <ul>
-    <li>..</li>
+    <li>The CLI for graph conversions and simple visualisation.</li>
     </ul></li>
 </ul>
 
