@@ -17,6 +17,8 @@
     <pathelement path="${cli_jar}"/>
     <pathelement path="${jgrapht_core_jar}"/>
     <pathelement path="${jgrapht_io_jar}"/>
+    <pathelement path="${jgrapht_ext_jar}"/>
+    <pathelement path="${jgraphx_jar}"/>
     <fileset dir="../extlib">
       <include name="*.jar"/>
       </fileset>
@@ -84,6 +86,7 @@
       <fileset file="${sux4j_jar}"/>
       <fileset file="${webgraph_jar}"/>
       <fileset file="${webgraph_jar}"/>
+      <fileset file="${jgraphx_jar}"/>
       </copy>
     </target>
 
@@ -140,11 +143,14 @@
       <zipfileset includes="**/*" src="${cli_jar}"                    excludes="META-INF/*"/>
       <zipfileset includes="**/*" src="${jgrapht_core_jar}"           excludes="META-INF/*"/>
       <zipfileset includes="**/*" src="${jgrapht_io_jar}"             excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${jgrapht_ext_jar}"             excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${jgraphx_jar}"             excludes="META-INF/*"/>
       <manifest>
         <attribute name="Created-By" value="${user.name}"/>
         <attribute name="AppName"    value="Grapher"/>
         <attribute name="AppVersion" value="${version} ${TSTAMP}"/>
         <!--attribute name="Main-Class" value="com.Grapher.Tests.HelloJGraphT"/-->
+        <!--attribute name="Main-Class" value="com.Grapher.Tests.HelloJGraphX"/-->
         <attribute name="Main-Class" value="com.Grapher.Apps.CLI"/>
         </manifest>
       </jar>
@@ -222,6 +228,7 @@
       <bottom><![CDATA[<a href='https://cern.ch/hrivnac/Activities/Packages/Grapher'>Documentation</a>]]> built ${TODAY} on ${os.name} by ${user.name}</bottom>
       <group title="Apps"       packages="com.Grapher.Apps*"/>
       <group title="Convertors" packages="com.Grapher.Convertors*"/>
+      <group title="GUI"        packages="com.Grapher.GUI*"/>
       <group title="Utils"      packages="com.Grapher.Utils*"/>
       <group title="Tests"      packages="com.Grapher.Tests*"/>
       <link href="http://docs.oracle.com/javase/11/docs/api" packagelistLoc="${javadoc}" offline="true"/>

@@ -1,6 +1,7 @@
 package com.Grapher.Apps;
 
 import com.Grapher.Convertors.Convertor;
+import com.Grapher.GUI.Shower;
 import com.Grapher.Utils.Init;
 
 // CLI
@@ -40,7 +41,12 @@ public class CLI {
   /** Execute command line in required way. */
   public void execute() {
     Convertor convertor = new Convertor(_infile, _outfile);
-    convertor.convert();
+    if (_show) {
+      new Shower().show(convertor.read());
+      }
+    else {
+      convertor.convert();
+      }
     }
     
   /** Parse the cli arguments.
@@ -50,13 +56,14 @@ public class CLI {
     Options options = new Options();
     options.addOption("h", "help",     false, "show help");
     options.addOption("q", "quiet",    false, "minimal direct feedback");
+    options.addOption("s", "show",     false, "show in graphical window (instead of converting)");
     options.addOption(OptionBuilder.withLongOpt("in")
-                                   .withDescription("input file name")
+                                   .withDescription("input file name [.graphml]")
                                    .hasArg()
                                    .withArgName("infile")
                                    .create("i"));
     options.addOption(OptionBuilder.withLongOpt("out")
-                                   .withDescription("output file name")
+                                   .withDescription("output file name [.dot|.mat|.g6]")
                                    .hasArg()
                                    .withArgName("outfile")
                                    .create("o"));
@@ -64,6 +71,9 @@ public class CLI {
       CommandLine cline = parser.parse(options, args );
       if (cline.hasOption("quiet")) {
         _quiet = true;
+        }
+      if (cline.hasOption("show")) {
+        _show = true;
         }
       if (cline.hasOption("help")) {
         new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
@@ -92,7 +102,7 @@ public class CLI {
   public static String help() {
     return _help;
    }
-   
+  
   /** Tell whether running in a quiet mode.
     * @return Whether running in a quiet mode. */
   public boolean quiet() {
@@ -113,6 +123,7 @@ public class CLI {
                                     
   private static String  _help       = "";                                    
   private        boolean _quiet      = false;
+  private        boolean _show       = false;
   private        String  _infile;
   private        String  _outfile;
 

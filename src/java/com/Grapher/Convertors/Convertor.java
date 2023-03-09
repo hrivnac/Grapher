@@ -1,5 +1,9 @@
 package com.Grapher.Convertors;
 
+import com.Grapher.CustomGraph.CustomEdge;
+import com.Grapher.CustomGraph.CustomVertex;
+import com.Grapher.CustomGraph.CustomVertexSupplier;
+
 // JGraphT
 import org.jgrapht.*;
 import org.jgrapht.graph.*;
@@ -8,6 +12,7 @@ import org.jgrapht.nio.*;
 import org.jgrapht.nio.graphml.*;
 import org.jgrapht.nio.dot.*;
 import org.jgrapht.nio.graph6.*;
+import org.jgrapht.nio.matrix.*;
 import org.jgrapht.util.*;
 
 // Java
@@ -40,32 +45,77 @@ public class Convertor {
     _outfile = outfile;
     }
     
-  /** Execute the conversion. */
-  public void convert() {
-    log.info("Converting " + _infile + " to " + _outfile);
-    Graph<CustomVertex, DefaultEdge> g = null;
+  /** TBD */
+  public Graph<CustomVertex, CustomEdge> read() {
+    log.info("Reading " + _infile);
     try {
       if (_infile.endsWith(".graphml")) {
-        g = readGraphML(new FileInputStream(new File(_infile)),
-                        DefaultEdge.class,
-                        true,
-                        true);
+        return readGraphML(new FileInputStream(new File(_infile)),
+                        true,   // directed
+                        false,  // weighted
+                        true,   // multipleEdges
+                        false); // selfLoops
         }
       else {
         log.fatal("Unknown file type of " + _infile);
-        return;
+        return null; // TBD: make null graph
         }
       }
     catch (FileNotFoundException e) {
       log.fatal("Cannot find file " + _infile, e);
-      return;
+      return null; // TBD: kake null graph
       }
+    }
+    
+  /** Execute the conversion. */
+  public void convert() {
+    log.info("Converting to " + _outfile);
+    Graph<CustomVertex, CustomEdge> g = read();
     if (_outfile == null) {
       log.info(g);
       }
     else {
       if (_outfile.endsWith(".dot")) {
-        writeDOT(g);
+        String dot = writeDOT(g);
+        try {
+          FileWriter writer = new FileWriter(_outfile);
+          writer.write(dot);
+          writer.close();
+          }
+        catch (IOException e) {
+          log.error("Cannot write to " + _outfile, e);
+          }
+        }
+      else if (_outfile.endsWith(".g6")) {
+        String g6 = null;
+        try {
+          g6 = writeGraph6(g);
+          }
+        catch (UnsupportedEncodingException e) {
+          log.error("Cannot encode " + _outfile, e);
+          return;
+          }
+        try {
+          FileWriter writer = new FileWriter(_outfile);
+          writer.write(g6);
+          writer.close();
+          }
+        catch (IOException e) {
+          log.error("Cannot write to " + _outfile, e);
+          return;
+          }
+        }
+      else if (_outfile.endsWith(".mat")) {
+        String mat = writeMatrix(g);
+        try {
+          FileWriter writer = new FileWriter(_outfile);
+          writer.write(mat);
+          writer.close();
+          }
+        catch (IOException e) {
+          log.error("Cannot write to " + _outfile, e);
+          return;
+          }
         }
       else {
         log.fatal("Unknwn file type of " + _outfile);
@@ -76,111 +126,109 @@ public class Convertor {
 
   // Writers -------------------------------------------------------------------
   
-  public void writeDOT(Graph graph) {
-    DOTExporter<String, DefaultEdge> exporter = new DOTExporter<>();
+  public String writeDOT(Graph<CustomVertex, CustomEdge> graph) {
+    DOTExporter<CustomVertex, CustomEdge> exporter = new DOTExporter<>();
     exporter.setVertexAttributeProvider((v) -> {
       Map<String, Attribute> map = new LinkedHashMap<>();
-      map.put("label", DefaultAttribute.createAttribute(v.toString()));
+      map.put("label", DefaultAttribute.createAttribute(v.getName()));
+      return map;
+      });
+    exporter.setEdgeAttributeProvider((e) -> {
+      Map<String, Attribute> map = new LinkedHashMap<>();
+      map.put("label", DefaultAttribute.createAttribute(e.getName()));
       return map;
       });
     Writer writer = new StringWriter();
     exporter.exportGraph(graph, writer);
-    System.out.println(writer.toString());
+    return writer.toString();
     }
+    
+  public String writeGraph6(Graph<CustomVertex, CustomEdge> graph) throws UnsupportedEncodingException {
+    Graph6Sparse6Exporter<CustomVertex, CustomEdge> exporter = new Graph6Sparse6Exporter<>(Graph6Sparse6Exporter.Format.GRAPH6);
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    exporter.exportGraph(new AsUndirectedGraph<>(graph), os);
+    return new String(os.toByteArray(), "UTF-8");
+    }  
+    
+  public String writeMatrix(Graph<CustomVertex, CustomEdge> graph) {
+    GraphExporter<CustomVertex, CustomEdge> exporter = new MatrixExporter<>();
+    Writer writer = new StringWriter();
+    exporter.exportGraph(graph, writer);
+    return writer.toString();
+    }  
          
   // Readers -------------------------------------------------------------------  
     
-  public <E> Graph<CustomVertex, E> readGraphML(String   input,
-                                                Class<E> edgeClass,
-                                                boolean  directed,
-                                                boolean  weighted) throws ImportException {
-    return readGraphML(input,           
-                       edgeClass,
-                       directed,
-                       weighted,
-                       new HashMap<>(),
-                       new HashMap<E, Map<String, Attribute>>());
-      }
-
-  public <E> Graph<CustomVertex, E> readGraphML(InputStream input,
-                                                Class<E>    edgeClass,
-                                                boolean     directed,
-                                                boolean     weighted) throws ImportException {
+  public Graph<CustomVertex, CustomEdge> readGraphML(InputStream input,
+                                                     boolean     directed,
+                                                     boolean     weighted,
+                                                     boolean     multipleEdges,
+                                                     boolean     selfLoops) {
     return readGraphML(input,
-                       edgeClass,
                        directed,
                        weighted,
-                       new HashMap<>(),
-                       new HashMap<E, Map<String, Attribute>>());
+                       multipleEdges,
+                       selfLoops,
+                       new HashMap<CustomVertex, Map<String, Attribute>>(),
+                       new HashMap<CustomEdge,   Map<String, Attribute>>());
       }
 
-  public <E> Graph<CustomVertex, E> readGraphML(String                                    input,
-                                                Class<E>                                  edgeClass,
-                                                boolean                                   directed,
-                                                boolean                                   weighted,
-                                                Map<CustomVertex, Map<String, Attribute>> vertexAttributes,
-                                                Map<E, Map<String, Attribute>>            edgeAttributes) throws ImportException {
-    return readGraphML(new ByteArrayInputStream(input.getBytes()),
-                       edgeClass,
-                       directed,
-                       weighted,
-                       vertexAttributes,
-                       edgeAttributes);
-    }
-
-  public <E> Graph<CustomVertex, E> readGraphML(InputStream                               input,
-                                                Class<E>                                  edgeClass,
-                                                boolean                                   directed,
-                                                boolean                                   weighted,
-                                                Map<CustomVertex, Map<String, Attribute>> vertexAttributes,
-                                                Map<E, Map<String, Attribute>>            edgeAttributes) throws ImportException{
-    Graph<CustomVertex, E> g;
+  public Graph<CustomVertex, CustomEdge> readGraphML(InputStream                               input,
+                                                     boolean                                   directed,
+                                                     boolean                                   weighted,
+                                                     boolean                                   multipleEdges,
+                                                     boolean                                   selfLoops,
+                                                     Map<CustomVertex, Map<String, Attribute>> vertexAttributes,
+                                                     Map<CustomEdge,   Map<String, Attribute>> edgeAttributes) throws ImportException{
+    Graph<CustomVertex, CustomEdge> g;
     if (directed) {
       g = GraphTypeBuilder.directed()
-                          .allowingMultipleEdges(true)
-                          .allowingSelfLoops(true)
+                          .allowingMultipleEdges(multipleEdges)
+                          .allowingSelfLoops(selfLoops)
                           .weighted(weighted)
                           .vertexSupplier(new CustomVertexSupplier())
                           .vertexClass(CustomVertex.class)
-                          .edgeClass(edgeClass)
+                          .edgeClass(CustomEdge.class)
                           .buildGraph();
         }
       else {
         g = GraphTypeBuilder.undirected()
-                            .allowingMultipleEdges(true)
-                            .allowingSelfLoops(true)
+                            .allowingMultipleEdges(multipleEdges)
+                            .allowingSelfLoops(selfLoops)
                             .weighted(weighted)
                             .vertexSupplier(new CustomVertexSupplier())
                             .vertexClass(CustomVertex.class)
-                            .edgeClass(edgeClass)
+                            .edgeClass(CustomEdge.class)
                             .buildGraph();
         }
-    GraphMLImporter<CustomVertex, E> importer = createGraphMLImporter(vertexAttributes, edgeAttributes);
+    GraphMLImporter<CustomVertex, CustomEdge> importer = createGraphMLImporter(vertexAttributes, edgeAttributes);
+    //importer.setEdgeWeightAttributeName("myvalue");        
     importer.importGraph(g, input);
     return g;
     }
 
-  public <E> GraphMLImporter<CustomVertex, E> createGraphMLImporter(Map<CustomVertex, Map<String, Attribute>> vertexAttributes,
-                                                                    Map<E,            Map<String, Attribute>> edgeAttributes) {
-    GraphMLImporter<CustomVertex, E> importer = new GraphMLImporter<>();
+  public GraphMLImporter<CustomVertex, CustomEdge> createGraphMLImporter(Map<CustomVertex, Map<String, Attribute>> vertexAttributes,
+                                                                         Map<CustomEdge,   Map<String, Attribute>> edgeAttributes) {
+    GraphMLImporter<CustomVertex, CustomEdge> importer = new GraphMLImporter<>();
     importer.addVertexAttributeConsumer((k, a) -> {
       CustomVertex vertex = k.getFirst();
       Map<String, Attribute> attrs = vertexAttributes.get(vertex);
-      vertex.setAttributes(attrs);
       if (attrs == null) {
         attrs = new HashMap<>();
         vertexAttributes.put(vertex, attrs);
         }
       attrs.put(k.getSecond(), a);
+      vertex.putAttribute(k.getSecond(), a);
       });
     importer.addEdgeAttributeConsumer((k, a) -> {
-      E edge = k.getFirst();
+      CustomEdge edge = k.getFirst();
       Map<String, Attribute> attrs = edgeAttributes.get(edge);
       if (attrs == null) {
         attrs = new HashMap<>();
         edgeAttributes.put(edge, attrs);
         }
       attrs.put(k.getSecond(), a);
+      edge.putAttribute(k.getSecond(), a);
       });
     return importer;    
     }    
