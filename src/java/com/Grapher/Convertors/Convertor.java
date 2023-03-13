@@ -36,10 +36,6 @@ import java.util.LinkedHashMap;
 import org.apache.log4j.Logger;
 
 /** <code>Convertor</code> converts between Graph formats.
-  * @opt attributes
-  * @opt operations
-  * @opt types
-  * @opt visibility
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class Convertor {
   
@@ -136,10 +132,12 @@ public class Convertor {
 
   // Writers -------------------------------------------------------------------
   
-  /** Represent {@link Graph} as a <em>DOT</em> string.
+  /** Represent {@link Graph}              doclet="org.jboss.apiviz.APIviz"
+             docletpath="../extlib/apiviz-1.3.4.jar:../extlib/jdepend-2.9.5.jar:../extlib/tools-1.8.0.jar"
+as a <em>DOT</em> string.
     * Reading in <em>GraphViz</em>:
     * <pre>
-    * dot -T jpg mygraph.dot > mygraph.jpg
+    * dot -T jpg mygraph.dot &gt; mygraph.jpg
     * </pre>
     * @param graph The {@link Graph} to be written out.
     * @return      The <em>DOT</em> representation of the {@link Graph}. */

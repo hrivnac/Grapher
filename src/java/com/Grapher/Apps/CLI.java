@@ -17,10 +17,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
 
 /** Simple Command Line.
-  * @opt attributes
-  * @opt operations
-  * @opt types
-  * @opt visibility
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class CLI {
 

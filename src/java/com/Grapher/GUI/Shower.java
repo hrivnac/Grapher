@@ -21,10 +21,6 @@ import javax.swing.JApplet;
 /** <code>Shower</code> shows Graph in a graphical window.
   * Adapted  from
   * <a href="https://github.com/jgrapht/jgrapht/blob/master/jgrapht-io/src/test/java/org/jgrapht/nio/graphml/GraphMLImporterTest.java">GraphMLImporterTest</a>.
-  * @opt attributes
-  * @opt operations
-  * @opt types
-  * @opt visibility
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class Shower extends JApplet{
   

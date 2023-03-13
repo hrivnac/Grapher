@@ -5,10 +5,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /** <code>Init</code> provides common initialisation.
-  * @opt attributes
-  * @opt operations
-  * @opt types
-  * @opt visibility
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class Init {
 

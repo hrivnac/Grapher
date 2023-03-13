@@ -4,10 +4,6 @@ package com.Grapher.CustomGraph;
 import java.util.function.Supplier;
 
 /** <code>CustomVertexSupplier</code> supplies {@link Supplier} for {@link CustomVertex}.
-  * @opt attributes
-  * @opt operations
-  * @opt types
-  * @opt visibility
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class CustomVertexSupplier implements Supplier<CustomVertex> {
 

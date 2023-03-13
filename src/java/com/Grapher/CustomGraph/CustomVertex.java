@@ -11,10 +11,6 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 /** <code>CustomVertex</code> represents graph vertex.
-  * @opt attributes
-  * @opt operations
-  * @opt types
-  * @opt visibility
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class CustomVertex {
 
@@ -68,8 +64,7 @@ public class CustomVertex {
     }
 
   /** Put one {@link Attribute}.
-    * @param name The name of the new {@link Attribute}.
-    * @return     The value of the new {@link Attribute}. */
+    * @param name The name of the new {@link Attribute}. */
   public void putAttribute(String name,
                            Attribute value) {
     _attributes.put(name, value);
