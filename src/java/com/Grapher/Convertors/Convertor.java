@@ -63,7 +63,7 @@ public class Convertor {
         return readGraphML(new FileInputStream(new File(_infile)),
                         true,   // directed
                         false,  // weighted
-                        true,   // multipleEdges
+                        false,  // multipleEdges
                         false); // selfLoops
         }
       else {
@@ -137,6 +137,10 @@ public class Convertor {
   // Writers -------------------------------------------------------------------
   
   /** Represent {@link Graph} as a <em>DOT</em> string.
+    * Reading in <em>GraphViz</em>:
+    * <pre>
+    * dot -T jpg mygraph.dot > mygraph.jpg
+    * </pre>
     * @param graph The {@link Graph} to be written out.
     * @return      The <em>DOT</em> representation of the {@link Graph}. */
   public String writeDOT(Graph<CustomVertex, CustomEdge> graph) {
@@ -157,6 +161,15 @@ public class Convertor {
     }
     
   /** Represent {@link Graph} as a <em>Graph6</em> string.
+    * Reading in <em>Sage</em>:
+    * <pre>
+    * with open("mygraph.g6", "r") as f:
+    * g6 = f.read()
+    * from sage.graphs.graph_input import from_graph6  
+    * g = Graph() 
+    * from_graph6(g, g6) 
+    * g.plot()
+    * </pre>
     * @param graph The {@link Graph} to be written out.
     * @return      The <em>Graph6</em> representation of the {@link Graph}. */
   public String writeGraph6(Graph<CustomVertex, CustomEdge> graph) throws UnsupportedEncodingException {
@@ -241,13 +254,18 @@ public class Convertor {
       });
     importer.addEdgeAttributeConsumer((k, a) -> {
       CustomEdge edge = k.getFirst();
-      Map<String, Attribute> attrs = edgeAttributes.get(edge);
-      if (attrs == null) {
-        attrs = new HashMap<>();
-        edgeAttributes.put(edge, attrs);
+      if (edge == null) {
+        log.error("Edge ingnored: "  + k + " -> " + a);
         }
-      attrs.put(k.getSecond(), a);
-      edge.putAttribute(k.getSecond(), a);
+      else {
+        Map<String, Attribute> attrs = edgeAttributes.get(edge);
+        if (attrs == null) {
+          attrs = new HashMap<>();
+          edgeAttributes.put(edge, attrs);
+          }
+        attrs.put(k.getSecond(), a);
+        edge.putAttribute(k.getSecond(), a);
+        }
       });
     return importer;    
     }    

@@ -100,8 +100,13 @@ public class CustomVertex {
       return getAttribute("objectId").getValue();
       }
     else if (getLbl().equals("PCA")) {
+      if (getAttribute("objectId") != null) {
+        return getAttribute("objectId").getValue();
+        }
+      else {
         return "PCA";
         }
+      }
     return "none";
     }
     
