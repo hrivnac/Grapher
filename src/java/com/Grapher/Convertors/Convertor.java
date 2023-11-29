@@ -71,11 +71,16 @@ public class Convertor {
       }
     }
     
-  /** Execute the conversion. */
+  /** Read and execute the conversion. */
   public void convert() {
+    convert(read());
+    }
+    
+  /** Execute the conversion.
+    * @param g The {@link Graph} to convert. */
+  public void convert(Graph<CustomVertex, CustomEdge> g) {
     String outfile = _cli.outfile();
-    log.info("Converting to " + outfile);
-    Graph<CustomVertex, CustomEdge> g = read();
+    log.info("Converting graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] to " + outfile);
     if (outfile == null) {
       log.info(g);
       }
@@ -268,23 +273,21 @@ public class Convertor {
       attrs.put(k.getSecond(), a);
       vertex.putAttribute(k.getSecond(), a);
       });
-    if (!_cli.noedge()) {
-      importer.addEdgeAttributeConsumer((k, a) -> {
-        CustomEdge edge = k.getFirst();
-        if (edge == null) {
-          log.error("Edge ignored: "  + k + " -> " + a);
+    importer.addEdgeAttributeConsumer((k, a) -> {
+      CustomEdge edge = k.getFirst();
+      if (edge == null) {
+        log.error("Edge ignored: "  + k + " -> " + a);
+        }
+      else {
+        Map<String, Attribute> attrs = edgeAttributes.get(edge);
+        if (attrs == null) {
+          attrs = new HashMap<>();
+          edgeAttributes.put(edge, attrs);
           }
-        else {
-          Map<String, Attribute> attrs = edgeAttributes.get(edge);
-          if (attrs == null) {
-            attrs = new HashMap<>();
-            edgeAttributes.put(edge, attrs);
-            }
-          attrs.put(k.getSecond(), a);
-          edge.putAttribute(k.getSecond(), a);
-          }
-        });
-      }
+        attrs.put(k.getSecond(), a);
+        edge.putAttribute(k.getSecond(), a);
+        }
+      });
     return importer;    
     }    
   

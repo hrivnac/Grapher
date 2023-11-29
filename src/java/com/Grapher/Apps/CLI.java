@@ -38,13 +38,16 @@ public class CLI {
     if (_show) {
       new Shower().show(convertor.read());
       }
-    else if (_algorithm != null) {
-      Analyser analyser = new Analyser(this);
-      analyser.fill(convertor.read());
-      analyser.apply(_algorithm, _params);
-      }
     else {
-      convertor.convert();
+      if (_algorithm == null) {
+        convertor.convert();
+        }
+      else {
+        Analyser analyser = new Analyser(this);
+        analyser.fill(convertor.read());
+        analyser.apply(_algorithm, _params);
+        convertor.convert(analyser.graph());
+        }
       }
     }
     
@@ -68,7 +71,7 @@ public class CLI {
                                    .withArgName("outfile")
                                    .create("o"));
     options.addOption(OptionBuilder.withLongOpt("alg")
-                                   .withDescription("apply algorithm (instead of converting) [sc = Strong Connectivity | cl = Clustering]")
+                                   .withDescription("apply algorithm (instead of converting) [sc = Strong Connectivity | cl = Clustering | ad = adding distances]")
                                    .hasArg()
                                    .withArgName("algoritm")
                                    .create("a"));
@@ -84,9 +87,6 @@ public class CLI {
         }
       if (cline.hasOption("noedge")) {
         _noedge = true;
-        }
-      if (cline.hasOption("show")) {
-        _show = true;
         }
       if (cline.hasOption("params")) {
         _params = cline.getOptionValue("params");
@@ -107,17 +107,15 @@ public class CLI {
         _outfile = cline.getOptionValue("out");
         }
       if (cline.hasOption("alg")) {
-        if (cline.hasOption("out")) {
-          log.error("out and alg options are incompatible"); 
-          new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
-          System.exit(0);
-          }
-        if (cline.hasOption("show")) {
+        _algorithm = cline.getOptionValue("alg");
+        }
+      if (cline.hasOption("show")) {
+        if (cline.hasOption("alg")) {
           log.error("show and alg options are incompatible"); 
           new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
           System.exit(0);
           }
-        _algorithm = cline.getOptionValue("alg");
+        _show = true;
         }
       }
     catch (ParseException e) { 

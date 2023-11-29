@@ -48,8 +48,8 @@ public class CustomEdge extends DefaultWeightedEdge {
       return getAttribute("difference").getValue();
       }
     else if (getLbl().equals("has")) {
-        return "has";
-        }
+      return "has";
+      }
     return "none";
     }
      

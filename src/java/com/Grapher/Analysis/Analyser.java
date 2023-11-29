@@ -11,6 +11,8 @@ import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 
 import org.jgrapht.alg.clustering.KSpanningTreeClustering;
+import org.jgrapht.nio.AttributeType;
+import org.jgrapht.nio.DefaultAttribute;
 
 import org.jgrapht.*;
 import org.jgrapht.alg.connectivity.*;
@@ -52,6 +54,9 @@ public class Analyser {
                     String params) {
     log.info("Applying " + algorithmName + " ...");
     switch (algorithmName) {
+      case "ad":
+        addDistances();
+      break;
       case "sc":
         applyStrongConnectivity();
       break;
@@ -91,9 +96,78 @@ public class Analyser {
       }
     }
     
+   /** Add distances between {@link CustomVertex}s. */
+   // TBD: write detailed doc
+   public void addDistances() {
+     CustomEdge e;
+     int n1 = 0;
+     int n2 = 0;
+     for (CustomVertex v1 : _graph.vertexSet()) {
+       n1++;
+       n2 = 0;
+       for (CustomVertex v2 : _graph.vertexSet()) {
+         n2++;
+         if (n2 > n1) {
+           e = new CustomEdge();
+           e.putAttribute("difference", DefaultAttribute.createAttribute(difference(v1, v2)));
+           e.putAttribute("labelE",     DefaultAttribute.createAttribute("distance"        ));
+           _graph.addEdge(v1, v2, e);
+           }
+         }
+       }
+     }
+     
+   /** Give the difference between {@link CustomVertex}s.
+     * @param v1 The first {@link CustomVertex}.
+     * @param v2 The second {@link CustomVertex}.
+     * @return   The quadratic distance. */
+   private double difference(CustomVertex v1,
+                             CustomVertex v2) {
+     double diff = 0;
+     for (String pca : PCAs) {
+       diff += Math.pow(Double.valueOf(v1.getAttribute(pca).getValue()) - 
+                        Double.valueOf(v2.getAttribute(pca).getValue()), 2);
+       }
+     return Math.sqrt(diff);      
+     }
+     
+// =============================================================================     
+    
+  /** Give current {@link Graph}.
+    * @return The current {@link Graph}. May be result of an algoritm processing. */
+  public Graph<CustomVertex, CustomEdge> graph() {    
+    return _graph;
+    }
+    
    private Graph<CustomVertex, CustomEdge> _graph;
    
    private CLI _cli;
+   
+   private static String[] PCAs = new String[]{"pca00",
+                                               "pca01",
+                                               "pca02",
+                                               "pca03",
+                                               "pca04",
+                                               "pca05",
+                                               "pca06",
+                                               "pca07",
+                                               "pca08",
+                                               "pca09",
+                                               "pca10",
+                                               "pca11",
+                                               "pca12",
+                                               "pca13",
+                                               "pca14",
+                                               "pca15",
+                                               "pca16",
+                                               "pca17",
+                                               "pca18",
+                                               "pca19",
+                                               "pca20",
+                                               "pca21",
+                                               "pca22",
+                                               "pca23",
+                                               "pca24"};
     
    /** Logging . */
     private static Logger log = Logger.getLogger(Analyser.class);
