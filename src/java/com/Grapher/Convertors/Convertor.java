@@ -30,6 +30,8 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -50,25 +52,33 @@ public class Convertor {
   /** Read {@link Graph} from input file.
     * @return The read {@link Graph}. */
   public Graph<CustomVertex, CustomEdge> read() {
+    Graph<CustomVertex, CustomEdge> graph = null;
     String infile = _cli.infile();
     log.info("Reading " + infile);
     try {
       if (infile.endsWith(".graphml")) {
-        return readGraphML(new FileInputStream(new File(infile)),
-                           true,   // directed
-                           false,  // weighted
-                           false,  // multipleEdges
-                           false); // selfLoops
+        graph = readGraphML(new FileInputStream(new File(infile)),
+                            true,   // directed
+                            false,  // weighted
+                            false,  // multipleEdges
+                            false); // selfLoops
         }
       else {
         log.fatal("Unknown file type of " + infile);
-        return null; // TBD: make null graph
+        return graph;
         }
       }
     catch (FileNotFoundException e) {
       log.fatal("Cannot find file " + infile, e);
-      return null; // TBD: make null graph
+      return graph;
       }
+    if (_cli.noedge()) {
+      log.info("Removing Edges");
+      for (CustomEdge e : new HashSet<>(graph.edgeSet())) {
+        graph.removeEdge(e);
+        }
+      }
+   return graph;
     }
     
   /** Read and execute the conversion. */
