@@ -57,10 +57,10 @@ public class Convertor {
     try {
       if (_infile.endsWith(".graphml")) {
         return readGraphML(new FileInputStream(new File(_infile)),
-                        true,   // directed
-                        false,  // weighted
-                        false,  // multipleEdges
-                        false); // selfLoops
+                           true,   // directed
+                           false,  // weighted
+                           false,  // multipleEdges
+                           false); // selfLoops
         }
       else {
         log.fatal("Unknown file type of " + _infile);
@@ -69,7 +69,7 @@ public class Convertor {
       }
     catch (FileNotFoundException e) {
       log.fatal("Cannot find file " + _infile, e);
-      return null; // TBD: kake null graph
+      return null; // TBD: make null graph
       }
     }
     
@@ -132,9 +132,7 @@ public class Convertor {
 
   // Writers -------------------------------------------------------------------
   
-  /** Represent {@link Graph}              doclet="org.jboss.apiviz.APIviz"
-             docletpath="../extlib/apiviz-1.3.4.jar:../extlib/jdepend-2.9.5.jar:../extlib/tools-1.8.0.jar"
-as a <em>DOT</em> string.
+  /** Represent {@link Graph} as a <em>DOT</em> string.
     * Reading in <em>GraphViz</em>:
     * <pre>
     * dot -T jpg mygraph.dot &gt; mygraph.jpg
@@ -189,6 +187,13 @@ as a <em>DOT</em> string.
          
   // Readers -------------------------------------------------------------------  
     
+  /** Create {@link Graph} from <em>GraphML</em> {@link ImputStream}.
+    * @param input         The {@link InputStream} to read from.
+    * @param directed      Whether {@link Graph} is directed.
+    * @param weighted      Whether {@link Graph} is weighted.
+    * @param multipleEdges Whether {@link Graph} has multi-edges.
+    * @param selfLoops     Whether {@link Graph} has self-loops.
+    * @return              The created {@link Graph}. */
   public Graph<CustomVertex, CustomEdge> readGraphML(InputStream input,
                                                      boolean     directed,
                                                      boolean     weighted,
@@ -203,6 +208,15 @@ as a <em>DOT</em> string.
                        new HashMap<CustomEdge,   Map<String, Attribute>>());
       }
 
+  /** Create {@link Graph} from <em>GraphML</em> {@link ImputStream}.
+    * @param input            The {@link InputStream} to read from.
+    * @param directed         Whether {@link Graph} is directed.
+    * @param weighted         Whether {@link Graph} is weighted.
+    * @param multipleEdges    Whether {@link Graph} has multi-edges.
+    * @param selfLoops        Whether {@link Graph} has self-loops.
+    * @param vertexAttributes The {@link Map} of {@link CustomVertex} attributes to be filled.
+    * @param edgeAttributes   The {@link Map} of {@link CustomEdge} attributes to be filled.
+    * @return                 The created {@link Graph}. */
   public Graph<CustomVertex, CustomEdge> readGraphML(InputStream                               input,
                                                      boolean                                   directed,
                                                      boolean                                   weighted,
@@ -221,22 +235,27 @@ as a <em>DOT</em> string.
                           .edgeClass(CustomEdge.class)
                           .buildGraph();
         }
-      else {
-        g = GraphTypeBuilder.undirected()
-                            .allowingMultipleEdges(multipleEdges)
-                            .allowingSelfLoops(selfLoops)
-                            .weighted(weighted)
-                            .vertexSupplier(new CustomVertexSupplier())
-                            .vertexClass(CustomVertex.class)
-                            .edgeClass(CustomEdge.class)
-                            .buildGraph();
-        }
+    else {
+      g = GraphTypeBuilder.undirected()
+                          .allowingMultipleEdges(multipleEdges)
+                          .allowingSelfLoops(selfLoops)
+                          .weighted(weighted)
+                          .vertexSupplier(new CustomVertexSupplier())
+                          .vertexClass(CustomVertex.class)
+                          .edgeClass(CustomEdge.class)
+                          .buildGraph();
+      }
     GraphMLImporter<CustomVertex, CustomEdge> importer = createGraphMLImporter(vertexAttributes, edgeAttributes);
     //importer.setEdgeWeightAttributeName("myvalue");        
     importer.importGraph(g, input);
+    log.info("Imported graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "]");
     return g;
     }
 
+  /** Create {@link GraphMLImporter}.
+    * @param vertexAttributes The {@link CustomVertex} attributes to fill.
+    * @param edgeAttributes   The {@link CustomEdge} attributes to fill.
+    * @return                 The created {@link GraphMLImporter}. */
   public GraphMLImporter<CustomVertex, CustomEdge> createGraphMLImporter(Map<CustomVertex, Map<String, Attribute>> vertexAttributes,
                                                                          Map<CustomEdge,   Map<String, Attribute>> edgeAttributes) {
     GraphMLImporter<CustomVertex, CustomEdge> importer = new GraphMLImporter<>();
@@ -269,6 +288,7 @@ as a <em>DOT</em> string.
     }    
     
   private String _infile;
+  
   private String _outfile;
     
   /** Logging . */

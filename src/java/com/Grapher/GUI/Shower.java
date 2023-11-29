@@ -18,8 +18,11 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JApplet;
 
+// Log4J
+import org.apache.log4j.Logger;
+
 /** <code>Shower</code> shows Graph in a graphical window.
-  * Adapted  from
+  * Adapted from
   * <a href="https://github.com/jgrapht/jgrapht/blob/master/jgrapht-io/src/test/java/org/jgrapht/nio/graphml/GraphMLImporterTest.java">GraphMLImporterTest</a>.
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class Shower extends JApplet{
@@ -38,6 +41,7 @@ public class Shower extends JApplet{
   /** Show {@link Graph}.
     * @param graph The {@link Graph} to show. */
   public void show(Graph<CustomVertex, CustomEdge> graph) {
+    log.info("Showing ...");
     ListenableGraph<CustomVertex, CustomEdge> g = new DefaultListenableGraph<>(graph);
     jgxAdapter = new JGraphXAdapter<>(g);    
     setPreferredSize(DEFAULT_SIZE);
@@ -58,5 +62,8 @@ public class Shower extends JApplet{
   private JGraphXAdapter<CustomVertex, CustomEdge> jgxAdapter;
 
   private static final Dimension DEFAULT_SIZE = new Dimension(530, 320);
+  
+ /** Logging . */
+  private static Logger log = Logger.getLogger(Shower.class);
   
   }

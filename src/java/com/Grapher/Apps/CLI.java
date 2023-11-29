@@ -2,6 +2,7 @@ package com.Grapher.Apps;
 
 import com.Grapher.Convertors.Convertor;
 import com.Grapher.GUI.Shower;
+import com.Grapher.Analysis.Analyser;
 import com.Grapher.Utils.Init;
 
 // CLI
@@ -37,6 +38,11 @@ public class CLI {
     if (_show) {
       new Shower().show(convertor.read());
       }
+    else if (_algorithm != null) {
+      Analyser analyser = new Analyser(_algorithm);
+      analyser.fill(convertor.read());
+      analyser.apply();
+      }
     else {
       convertor.convert();
       }
@@ -60,6 +66,11 @@ public class CLI {
                                    .hasArg()
                                    .withArgName("outfile")
                                    .create("o"));
+    options.addOption(OptionBuilder.withLongOpt("alg")
+                                   .withDescription("algorithm name [cluster]")
+                                   .hasArg()
+                                   .withArgName("algoritm [sc = Strong Connectivity]")
+                                   .create("a"));
     try {
       CommandLine cline = parser.parse(options, args );
       if (cline.hasOption("quiet")) {
@@ -82,6 +93,19 @@ public class CLI {
         }
       if (cline.hasOption("out")) {
         _outfile = cline.getOptionValue("out");
+        }
+      if (cline.hasOption("alg")) {
+        if (cline.hasOption("out")) {
+          log.error("out and alg options are incompatible"); 
+          new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
+          System.exit(0);
+          }
+        if (cline.hasOption("show")) {
+          log.error("show and alg options are incompatible"); 
+          new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
+          System.exit(0);
+          }
+        _algorithm = cline.getOptionValue("alg");
         }
       }
     catch (ParseException e) { 
@@ -119,6 +143,7 @@ public class CLI {
   private        boolean _show       = false;
   private        String  _infile;
   private        String  _outfile;
+  private        String  _algorithm;
 
   /** Logging . */
   private static Logger log = Logger.getLogger(CLI.class);

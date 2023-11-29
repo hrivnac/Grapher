@@ -19,6 +19,7 @@
     <pathelement path="${jgrapht_io_jar}"/>
     <pathelement path="${jgrapht_ext_jar}"/>
     <pathelement path="${jgraphx_jar}"/>
+    <pathelement path="${jheaps_jar}"/>
     <fileset dir="../extlib">
       <include name="*.jar"/>
       </fileset>
@@ -143,8 +144,9 @@
       <zipfileset includes="**/*" src="${cli_jar}"                    excludes="META-INF/*"/>
       <zipfileset includes="**/*" src="${jgrapht_core_jar}"           excludes="META-INF/*"/>
       <zipfileset includes="**/*" src="${jgrapht_io_jar}"             excludes="META-INF/*"/>
-      <zipfileset includes="**/*" src="${jgrapht_ext_jar}"             excludes="META-INF/*"/>
-      <zipfileset includes="**/*" src="${jgraphx_jar}"             excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${jgrapht_ext_jar}"            excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${jgraphx_jar}"                excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${jheaps_jar}"                 excludes="META-INF/*"/>
       <manifest>
         <attribute name="Created-By" value="${user.name}"/>
         <attribute name="AppName"    value="Grapher"/>
@@ -227,6 +229,7 @@
       <group title="Apps"       packages="com.Grapher.Apps*"/>
       <group title="Convertors" packages="com.Grapher.Convertors*"/>
       <group title="GUI"        packages="com.Grapher.GUI*"/>
+      <group title="Analysis"   packages="com.Grapher.Analysis*"/>
       <group title="Utils"      packages="com.Grapher.Utils*"/>
       <group title="Tests"      packages="com.Grapher.Tests*"/>
       <link href="http://docs.oracle.com/javase/11/docs/api" packagelistLoc="${javadoc}" offline="true"/>

@@ -107,7 +107,7 @@ public class CustomVertex {
     
   @Override
   public String toString() {
-    return getLbl() + "(" + _id + ")";
+    return getLbl() + "(" + _id + ")" + " : " + getName();
     }
   
   private int _id;
