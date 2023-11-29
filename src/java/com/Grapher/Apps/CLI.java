@@ -34,14 +34,14 @@ public class CLI {
 
   /** Execute command line in required way. */
   public void execute() {
-    Convertor convertor = new Convertor(_infile, _outfile);
+    Convertor convertor = new Convertor(this);
     if (_show) {
       new Shower().show(convertor.read());
       }
     else if (_algorithm != null) {
-      Analyser analyser = new Analyser(_algorithm);
+      Analyser analyser = new Analyser(this);
       analyser.fill(convertor.read());
-      analyser.apply();
+      analyser.apply(_algorithm, _params);
       }
     else {
       convertor.convert();
@@ -56,6 +56,7 @@ public class CLI {
     options.addOption("h", "help",     false, "show help");
     options.addOption("q", "quiet",    false, "minimal direct feedback");
     options.addOption("s", "show",     false, "show in graphical window (instead of converting)");
+    options.addOption("e", "noedge",   false, "ignore edges");
     options.addOption(OptionBuilder.withLongOpt("in")
                                    .withDescription("input file name [.graphml]")
                                    .hasArg()
@@ -67,17 +68,28 @@ public class CLI {
                                    .withArgName("outfile")
                                    .create("o"));
     options.addOption(OptionBuilder.withLongOpt("alg")
-                                   .withDescription("algorithm name [cluster]")
+                                   .withDescription("apply algorithm (instead of converting) [sc = Strong Connectivity | cl = Clustering]")
                                    .hasArg()
-                                   .withArgName("algoritm [sc = Strong Connectivity]")
+                                   .withArgName("algoritm")
                                    .create("a"));
+    options.addOption(OptionBuilder.withLongOpt("params")
+                                   .withDescription("algorithm parameters")
+                                   .hasArg()
+                                   .withArgName("parameres")
+                                   .create("p"));
     try {
       CommandLine cline = parser.parse(options, args );
       if (cline.hasOption("quiet")) {
         _quiet = true;
         }
+      if (cline.hasOption("noedge")) {
+        _noedge = true;
+        }
       if (cline.hasOption("show")) {
         _show = true;
+        }
+      if (cline.hasOption("params")) {
+        _params = cline.getOptionValue("params");
         }
       if (cline.hasOption("help")) {
         new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
@@ -125,7 +137,13 @@ public class CLI {
   public boolean quiet() {
     return _quiet;
    }
-    
+   
+   /** Tell whether Edges should be ignored.
+    * @return Whether Edges should be ignored. */
+  public boolean noedge() {
+    return _noedge;
+   }
+   
   /** Give the input file name.
     * @return The input file name. */
   public String infile() {
@@ -141,9 +159,11 @@ public class CLI {
   private static String  _help       = "";                                    
   private        boolean _quiet      = false;
   private        boolean _show       = false;
+  private        boolean _noedge     = false;
   private        String  _infile;
   private        String  _outfile;
   private        String  _algorithm;
+  private        String  _params;
 
   /** Logging . */
   private static Logger log = Logger.getLogger(CLI.class);

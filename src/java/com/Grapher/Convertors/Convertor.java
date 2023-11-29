@@ -3,6 +3,7 @@ package com.Grapher.Convertors;
 import com.Grapher.CustomGraph.CustomEdge;
 import com.Grapher.CustomGraph.CustomVertex;
 import com.Grapher.CustomGraph.CustomVertexSupplier;
+import com.Grapher.Apps.CLI;
 
 // JGraphT
 import org.jgrapht.Graph;
@@ -41,90 +42,88 @@ public class Convertor {
   
   /** Convert graph file into new format.
     * Formats are deducted from the files extentions.
-    * @param infile  The input graph file.
-    * @param outfile The output graph file.
-    *                If <code>null</code>, output fill be written to <code>stdout</code>. */
-  public Convertor(String infile,
-                   String outfile) {
-    _infile  = infile;
-    _outfile = outfile;
+    * @param cli The calling {@link CLI}. */
+  public Convertor(CLI cli) {
+    _cli = cli;
     }
     
   /** Read {@link Graph} from input file.
     * @return The read {@link Graph}. */
   public Graph<CustomVertex, CustomEdge> read() {
-    log.info("Reading " + _infile);
+    String infile = _cli.infile();
+    log.info("Reading " + infile);
     try {
-      if (_infile.endsWith(".graphml")) {
-        return readGraphML(new FileInputStream(new File(_infile)),
+      if (infile.endsWith(".graphml")) {
+        return readGraphML(new FileInputStream(new File(infile)),
                            true,   // directed
                            false,  // weighted
                            false,  // multipleEdges
                            false); // selfLoops
         }
       else {
-        log.fatal("Unknown file type of " + _infile);
+        log.fatal("Unknown file type of " + infile);
         return null; // TBD: make null graph
         }
       }
     catch (FileNotFoundException e) {
-      log.fatal("Cannot find file " + _infile, e);
+      log.fatal("Cannot find file " + infile, e);
       return null; // TBD: make null graph
       }
     }
     
   /** Execute the conversion. */
   public void convert() {
-    log.info("Converting to " + _outfile);
+    String outfile = _cli.outfile();
+    log.info("Converting to " + outfile);
     Graph<CustomVertex, CustomEdge> g = read();
-    if (_outfile == null) {
+    if (outfile == null) {
       log.info(g);
       }
     else {
-      if (_outfile.endsWith(".dot")) {
+      if (outfile.endsWith(".dot")) {
         String dot = writeDOT(g);
         try {
-          FileWriter writer = new FileWriter(_outfile);
+          FileWriter writer = new FileWriter(outfile);
           writer.write(dot);
           writer.close();
           }
         catch (IOException e) {
-          log.error("Cannot write to " + _outfile, e);
+          log.error("Cannot write to " + outfile, e);
           }
         }
-      else if (_outfile.endsWith(".g6")) {
+      else if (outfile.endsWith(".g6")) {
         String g6 = null;
         try {
           g6 = writeGraph6(g);
           }
         catch (UnsupportedEncodingException e) {
-          log.error("Cannot encode " + _outfile, e);
+          log.error("Cannot encode " + outfile, e);
           return;
           }
         try {
-          FileWriter writer = new FileWriter(_outfile);
+          FileWriter writer = new FileWriter(outfile);
           writer.write(g6);
           writer.close();
           }
         catch (IOException e) {
-          log.error("Cannot write to " + _outfile, e);
+          log.error("Cannot write to " + outfile, e);
           return;
           }
         }
-      else if (_outfile.endsWith(".mat")) {
+      else if (outfile.endsWith(".mat")) {
         String mat = writeMatrix(g);
         try {
-          FileWriter writer = new FileWriter(_outfile);
+          FileWriter writer = new FileWriter(outfile);
           writer.write(mat);
           writer.close();
           }
         catch (IOException e) {
-          log.error("Cannot write to " + _outfile, e);
+          log.error("Cannot write to " + outfile, e);
           return;
           }
         }
       else {
-        log.fatal("Unknwn file type of " + _outfile);
+        log.fatal("Unknwn file type of " + outfile);
         return;
         }
       }
@@ -269,27 +268,27 @@ public class Convertor {
       attrs.put(k.getSecond(), a);
       vertex.putAttribute(k.getSecond(), a);
       });
-    importer.addEdgeAttributeConsumer((k, a) -> {
-      CustomEdge edge = k.getFirst();
-      if (edge == null) {
-        log.error("Edge ingnored: "  + k + " -> " + a);
-        }
-      else {
-        Map<String, Attribute> attrs = edgeAttributes.get(edge);
-        if (attrs == null) {
-          attrs = new HashMap<>();
-          edgeAttributes.put(edge, attrs);
+    if (!_cli.noedge()) {
+      importer.addEdgeAttributeConsumer((k, a) -> {
+        CustomEdge edge = k.getFirst();
+        if (edge == null) {
+          log.error("Edge ignored: "  + k + " -> " + a);
           }
-        attrs.put(k.getSecond(), a);
-        edge.putAttribute(k.getSecond(), a);
-        }
-      });
+        else {
+          Map<String, Attribute> attrs = edgeAttributes.get(edge);
+          if (attrs == null) {
+            attrs = new HashMap<>();
+            edgeAttributes.put(edge, attrs);
+            }
+          attrs.put(k.getSecond(), a);
+          edge.putAttribute(k.getSecond(), a);
+          }
+        });
+      }
     return importer;    
     }    
-    
-  private String _infile;
   
-  private String _outfile;
+  private CLI _cli;
     
   /** Logging . */
   private static Logger log = Logger.getLogger(Convertor.class);

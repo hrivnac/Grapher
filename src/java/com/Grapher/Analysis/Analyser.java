@@ -2,6 +2,7 @@ package com.Grapher.Analysis;
 
 import com.Grapher.CustomGraph.CustomEdge;
 import com.Grapher.CustomGraph.CustomVertex;
+import com.Grapher.Apps.CLI;
 
 // JGraphT
 import org.jgrapht.Graph;
@@ -33,9 +34,9 @@ import org.apache.log4j.Logger;
 public class Analyser {
   
   /** Create and associate an algoritm.
-    * @param algorithmName The name of the algorithm to execute. */ 
-  public Analyser(String algorithmName) {
-    _algorithmName = algorithmName; 
+    * @param cli The calling {@link CLI}. */ 
+  public Analyser(CLI cli) {
+    _cli = cli; 
     }
     
   /** Fill the {@link Graph} to be acted upon.
@@ -44,18 +45,25 @@ public class Analyser {
     _graph = graph;
     }
   
-  /** Apply the algorithm. */
-  public void apply() {
-    log.info("Applying " + _algorithmName + " ...");
-    switch (_algorithmName) {
+  /** Apply the algorithm.
+    * @param algorithmName The name of the algorithm to execute.
+    * @param params        The algorithm parameters. */ 
+  public void apply(String algorithmName,
+                    String params) {
+    log.info("Applying " + algorithmName + " ...");
+    switch (algorithmName) {
       case "sc":
         applyStrongConnectivity();
       break;
       case "cl":
-        applyClustering(5); // TBD: make cli parameter
+        int nClusters = 1;
+        if (params != null && !params.trim().equals("")) {
+          nClusters = new Integer(params);
+          }
+        applyClustering(nClusters);
       break;
       default:
-        log.fatal("Unknown algorithm: " + _algorithmName);
+        log.fatal("Unknown algorithm: " + algorithmName);
       }
     }
     
@@ -71,7 +79,7 @@ public class Analyser {
       }
     }
     
-  /** Apply <em>Clustering</em> algorithm.
+  /** Apply <em>Clustering</em> algorit_quiethm.
     * @param nClusters The required number of clusters. */
   public void applyClustering(int nClusters) { 
     log.info("Searching for " + nClusters + " clusters");
@@ -85,7 +93,7 @@ public class Analyser {
     
    private Graph<CustomVertex, CustomEdge> _graph;
    
-   private String _algorithmName;   
+   private CLI _cli;
     
    /** Logging . */
     private static Logger log = Logger.getLogger(Analyser.class);
