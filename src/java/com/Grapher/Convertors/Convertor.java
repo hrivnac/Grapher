@@ -90,7 +90,7 @@ public class Convertor {
     * @param g The {@link Graph} to convert. */
   public void convert(Graph<CustomVertex, CustomEdge> g) {
     String outfile = _cli.outfile();
-    log.info("Converting graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] to " + outfile);
+    log.info("Writing graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] to " + outfile);
     if (outfile == null) {
       log.info(g);
       }
@@ -262,7 +262,7 @@ public class Convertor {
     GraphMLImporter<CustomVertex, CustomEdge> importer = createGraphMLImporter(vertexAttributes, edgeAttributes);
     //importer.setEdgeWeightAttributeName("myvalue");        
     importer.importGraph(g, input);
-    log.info("Imported graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "]");
+    log.info("Imported graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] from " + _cli.infile());
     return g;
     }
 

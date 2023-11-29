@@ -52,7 +52,6 @@ public class Analyser {
     * @param params        The algorithm parameters. */ 
   public void apply(String algorithmName,
                     String params) {
-    log.info("Applying " + algorithmName + " ...");
     switch (algorithmName) {
       case "ad":
         addDistances();
@@ -73,9 +72,12 @@ public class Analyser {
     }
     
   // Algorithms ================================================================    
-    
+
+  // TBD: allow chain of algorithms
+  
   /** Apply <em>Strong Connectivity</em> algorithm. */
   public void applyStrongConnectivity() {            
+    log.info("Applying Strong Connectivity Algorithm ...");
     StrongConnectivityAlgorithm<CustomVertex, CustomEdge> scAlg = new KosarajuStrongConnectivityInspector<>(_graph);
     List<Set<CustomVertex>> stronglyConnectedSets = scAlg.stronglyConnectedSets();
     log.info("Strongly Connected Sets:");
@@ -87,7 +89,8 @@ public class Analyser {
   /** Apply <em>Clustering</em> algorit_quiethm.
     * @param nClusters The required number of clusters. */
   public void applyClustering(int nClusters) { 
-    log.info("Searching for " + nClusters + " clusters");
+    log.info("Applying Clustering Algorithm ...");
+    log.info("\tsearching for " + nClusters + " clusters");
     ClusteringAlgorithm<CustomVertex> clAlg = new KSpanningTreeClustering(new AsUndirectedGraph(_graph), nClusters);
     List<Set<CustomVertex>> clusterSets = clAlg.getClustering().getClusters();
     log.info("Clusters:");
@@ -99,6 +102,7 @@ public class Analyser {
    /** Add distances between {@link CustomVertex}s. */
    // TBD: write detailed doc
    public void addDistances() {
+   log.info("Adding distances ...");
      CustomEdge e;
      int n1 = 0;
      int n2 = 0;
