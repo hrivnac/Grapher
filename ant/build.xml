@@ -111,6 +111,20 @@
         </classpath>
       </javac>
     </target>
+        
+  <!-- Compile Native =======================================================-->
+    
+  <target name="compile-native"
+          depends="jar"
+          description="Compile into native application">
+    <exec executable="${graalvm_dir}/bin/native-image">
+      <arg value="--initialize-at-build-time=org.apache.log4j.Level,org.apache.log4j.Logger,org.apache.log4j.helpers.LogLog,org.apache.log4j.Priority,org.apache.log4j.LogManager,org.apache.log4j.helpers.Loader,org.apache.log4j.Category,org.apache.log4j.spi.RootLogger,org.apache.log4j.spi.LoggingEvent,org.slf4j.LoggerFactory,org.slf4j.impl.Log4jLoggerAdapter,org.slf4j.impl.Log4jLoggerFactory,org.slf4j.impl.StaticLoggerBinder"/>
+      <arg value="-H:Name=Grapher.exe"/>
+      <arg value="-H:Path=../bin"/>
+      <arg value="-jar"/>
+      <arg value="../lib/Grapher.exe.jar"/>
+      </exec>
+    </target>
     
   <!-- Create JAR ===========================================================-->
   
