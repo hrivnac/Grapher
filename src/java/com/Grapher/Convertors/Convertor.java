@@ -90,11 +90,8 @@ public class Convertor {
     * @param g The {@link Graph} to convert. */
   public void convert(Graph<CustomVertex, CustomEdge> g) {
     String outfile = _cli.outfile();
-    log.info("Writing graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] to " + outfile);
-    if (outfile == null) {
-      log.info(g);
-      }
-    else {
+    if (outfile != null) {
+      log.info("Writing graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] to " + outfile);
       if (outfile.endsWith(".dot")) {
         String dot = writeDOT(g);
         try {
@@ -138,7 +135,8 @@ public class Convertor {
           }
         }
       else {
-        log.fatal("Unknwn file type of " + outfile);
+        log.info("Unknwn file type of " + outfile);
+        log.info(g);
         return;
         }
       }
@@ -286,7 +284,7 @@ public class Convertor {
     importer.addEdgeAttributeConsumer((k, a) -> {
       CustomEdge edge = k.getFirst();
       if (edge == null) {
-        log.error("Edge ignored: "  + k + " -> " + a);
+        log.debug("Edge ignored: "  + k + " -> " + a);
         }
       else {
         Map<String, Attribute> attrs = edgeAttributes.get(edge);

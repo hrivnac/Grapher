@@ -45,7 +45,7 @@ public class CLI {
       else {
         Analyser analyser = new Analyser(this);
         analyser.fill(convertor.read());
-        analyser.apply(_algorithm, _params);
+        analyser.apply(_algorithm);
         convertor.convert(analyser.graph());
         }
       }
@@ -71,15 +71,10 @@ public class CLI {
                                    .withArgName("outfile")
                                    .create("o"));
     options.addOption(OptionBuilder.withLongOpt("alg")
-                                   .withDescription("apply algorithm (instead of converting) [sc = Strong Connectivity | cl = Clustering | ad = adding distances]")
+                                   .withDescription("apply algorithm (instead of justconverting)\n[sc = Strong Connectivity | cl = Clustering | ad = adding distances]]\nseveral algorithms can be separated by :\nalgorithm arguments can be supplied after /")
                                    .hasArg()
                                    .withArgName("algoritm")
                                    .create("a"));
-    options.addOption(OptionBuilder.withLongOpt("params")
-                                   .withDescription("algorithm parameters")
-                                   .hasArg()
-                                   .withArgName("parameres")
-                                   .create("p"));
     try {
       CommandLine cline = parser.parse(options, args );
       if (cline.hasOption("quiet")) {
@@ -87,9 +82,6 @@ public class CLI {
         }
       if (cline.hasOption("noedge")) {
         _noedge = true;
-        }
-      if (cline.hasOption("params")) {
-        _params = cline.getOptionValue("params");
         }
       if (cline.hasOption("help")) {
         new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
@@ -161,7 +153,6 @@ public class CLI {
   private        String  _infile;
   private        String  _outfile;
   private        String  _algorithm;
-  private        String  _params;
 
   /** Logging . */
   private static Logger log = Logger.getLogger(CLI.class);

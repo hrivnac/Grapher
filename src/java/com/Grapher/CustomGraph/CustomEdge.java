@@ -55,7 +55,7 @@ public class CustomEdge extends DefaultWeightedEdge {
      
   @Override
   public String toString() {
-    return getLbl() + " : " + getName();
+    return getLbl() + ":" + getName();
     }
     
   private Map<String, Attribute> _attributes = new HashMap<>();

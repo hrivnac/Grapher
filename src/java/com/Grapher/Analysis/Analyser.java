@@ -47,27 +47,31 @@ public class Analyser {
     _graph = graph;
     }
   
-  /** Apply the algorithm.
-    * @param algorithmName The name of the algorithm to execute.
-    * @param params        The algorithm parameters. */ 
-  public void apply(String algorithmName,
-                    String params) {
-    switch (algorithmName) {
-      case "ad":
-        addDistances();
-      break;
-      case "sc":
-        applyStrongConnectivity();
-      break;
-      case "cl":
-        int nClusters = 1;
-        if (params != null && !params.trim().equals("")) {
-          nClusters = new Integer(params);
-          }
-        applyClustering(nClusters);
-      break;
-      default:
-        log.fatal("Unknown algorithm: " + algorithmName);
+  /** Apply the algorithms.
+    * @param algorithmName The algorithms to execute.
+    *                      Several algorithms can be specified, separated by <em>:</em>.
+    *                      Algorithm parameters can be specified after <em>/</em> */ 
+  public void apply(String algorithmName) {
+    String[] algpar;
+    for (String alg : algorithmName.split(":")) {
+      algpar = alg.split("/");
+      switch (algpar[0]) {
+        case "ad":
+          addDistances();
+        break;
+        case "sc":
+          applyStrongConnectivity();
+        break;
+        case "cl":
+          int nClusters = 1;
+          if (algpar[1] != null) {
+            nClusters = new Integer(algpar[1]);
+            }
+          applyClustering(nClusters);
+        break;
+        default:
+          log.error("Unknown algorithm: " + alg);
+        }
       }
     }
     
