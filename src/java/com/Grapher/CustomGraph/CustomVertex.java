@@ -64,7 +64,8 @@ public class CustomVertex {
     }
 
   /** Put one {@link Attribute}.
-    * @param name The name of the new {@link Attribute}. */
+    * @param name  The name of the new {@link Attribute}.
+    * @param value The val;ue of the new {@link Attribute}. */
   public void putAttribute(String name,
                            Attribute value) {
     _attributes.put(name, value);

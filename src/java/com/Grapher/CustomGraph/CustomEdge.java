@@ -29,7 +29,8 @@ public class CustomEdge extends DefaultWeightedEdge {
     }
 
   /** Put one {@link Attribute}.
-    * @param name The name of the new {@link Attribute}. */
+    * @param name  The name of the new {@link Attribute}.
+    * @param value The value of the new {@link Attribute}. */
   public void putAttribute(String name,
                            Attribute value) {
     _attributes.put(name, value);

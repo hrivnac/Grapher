@@ -178,7 +178,8 @@ public class Convertor {
     * g.plot()
     * </pre>
     * @param graph The {@link Graph} to be written out.
-    * @return      The <em>Graph6</em> representation of the {@link Graph}. */
+    * @return      The <em>Graph6</em> representation of the {@link Graph}.
+    * @throws UnsupportedEncodingException If unsupportec encoding used. */
   public String writeGraph6(Graph<CustomVertex, CustomEdge> graph) throws UnsupportedEncodingException {
     Graph6Sparse6Exporter<CustomVertex, CustomEdge> exporter = new Graph6Sparse6Exporter<>(Graph6Sparse6Exporter.Format.GRAPH6);
     ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -198,7 +199,7 @@ public class Convertor {
          
   // Readers -------------------------------------------------------------------  
     
-  /** Create {@link Graph} from <em>GraphML</em> {@link ImputStream}.
+  /** Create {@link Graph} from <em>GraphML</em> {@link InputStream}.
     * @param input         The {@link InputStream} to read from.
     * @param directed      Whether {@link Graph} is directed.
     * @param weighted      Whether {@link Graph} is weighted.
@@ -219,7 +220,7 @@ public class Convertor {
                        new HashMap<CustomEdge,   Map<String, Attribute>>());
       }
 
-  /** Create {@link Graph} from <em>GraphML</em> {@link ImputStream}.
+  /** Create {@link Graph} from <em>GraphML</em> {@link InputStream}.
     * @param input            The {@link InputStream} to read from.
     * @param directed         Whether {@link Graph} is directed.
     * @param weighted         Whether {@link Graph} is weighted.

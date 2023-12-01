@@ -21,7 +21,8 @@ import org.apache.log4j.Logger;
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class CLI extends Params {
 
-  /** Create and execute following command line arguments. */
+  /** Create and execute following command line arguments.
+    * @param args  The cli arguments. */
   public static void main(String[] args) {
     CLI cli = new CLI();
     cli.parseArgs(args);
