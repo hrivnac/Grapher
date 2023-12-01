@@ -3,7 +3,7 @@ package com.Grapher.Convertors;
 import com.Grapher.CustomGraph.CustomEdge;
 import com.Grapher.CustomGraph.CustomVertex;
 import com.Grapher.CustomGraph.CustomVertexSupplier;
-import com.Grapher.Apps.CLI;
+import com.Grapher.Apps.Params;
 
 // JGraphT
 import org.jgrapht.Graph;
@@ -30,7 +30,6 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -44,16 +43,16 @@ public class Convertor {
   
   /** Convert graph file into new format.
     * Formats are deducted from the files extentions.
-    * @param cli The calling {@link CLI}. */
-  public Convertor(CLI cli) {
-    _cli = cli;
+    * @param params The calling {@link Params}. */
+  public Convertor(Params params) {
+    _params = params;
     }
     
   /** Read {@link Graph} from input file.
     * @return The read {@link Graph}. */
   public Graph<CustomVertex, CustomEdge> read() {
     Graph<CustomVertex, CustomEdge> graph = null;
-    String infile = _cli.infile();
+    String infile = _params.infile();
     log.info("Reading " + infile);
     try {
       if (infile.endsWith(".graphml")) {
@@ -72,7 +71,7 @@ public class Convertor {
       log.fatal("Cannot find file " + infile, e);
       return graph;
       }
-    if (_cli.noedge()) {
+    if (_params.noedge()) {
       log.info("Removing Edges");
       for (CustomEdge e : new HashSet<>(graph.edgeSet())) {
         graph.removeEdge(e);
@@ -89,7 +88,7 @@ public class Convertor {
   /** Execute the conversion.
     * @param g The {@link Graph} to convert. */
   public void convert(Graph<CustomVertex, CustomEdge> g) {
-    String outfile = _cli.outfile();
+    String outfile = _params.outfile();
     if (outfile != null) {
       log.info("Writing graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] to " + outfile);
       if (outfile.endsWith(".dot")) {
@@ -260,7 +259,7 @@ public class Convertor {
     GraphMLImporter<CustomVertex, CustomEdge> importer = createGraphMLImporter(vertexAttributes, edgeAttributes);
     //importer.setEdgeWeightAttributeName("myvalue");        
     importer.importGraph(g, input);
-    log.info("Imported graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] from " + _cli.infile());
+    log.info("Imported graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] from " + _params.infile());
     return g;
     }
 
@@ -299,7 +298,7 @@ public class Convertor {
     return importer;    
     }    
   
-  private CLI _cli;
+  private Params _params;
     
   /** Logging . */
   private static Logger log = Logger.getLogger(Convertor.class);

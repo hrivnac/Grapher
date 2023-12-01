@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 
 /** Simple Command Line.
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
-public class CLI {
+public class CLI extends Params {
 
   /** Create and execute following command line arguments. */
   public static void main(String[] args) {
@@ -30,22 +30,24 @@ public class CLI {
     }
   
   /** Create. */
-  public CLI() {}
+  public CLI() {
+    super();
+    }
 
   /** Execute command line in required way. */
   public void execute() {
     Convertor convertor = new Convertor(this);
-    if (_show) {
+    if (show()) {
       new Shower().show(convertor.read());
       }
     else {
-      if (_algorithm == null) {
+      if (algorithm() == null) {
         convertor.convert();
         }
       else {
         Analyser analyser = new Analyser(this);
         analyser.fill(convertor.read());
-        analyser.apply(_algorithm);
+        analyser.apply();
         convertor.convert(analyser.graph());
         }
       }
@@ -78,17 +80,17 @@ public class CLI {
     try {
       CommandLine cline = parser.parse(options, args );
       if (cline.hasOption("quiet")) {
-        _quiet = true;
+        setQuiet(true);
         }
       if (cline.hasOption("noedge")) {
-        _noedge = true;
+        setNoedge(true);
         }
       if (cline.hasOption("help")) {
         new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
         System.exit(0);
         }
       if (cline.hasOption("in")) {
-        _infile = cline.getOptionValue("in");
+        setInfile(cline.getOptionValue("in"));
         }
       else {
         log.error("No input file specified"); 
@@ -96,10 +98,10 @@ public class CLI {
         System.exit(0);
         }
       if (cline.hasOption("out")) {
-        _outfile = cline.getOptionValue("out");
+        setOutfile(cline.getOptionValue("out"));
         }
       if (cline.hasOption("alg")) {
-        _algorithm = cline.getOptionValue("alg");
+        setAlgorithm(cline.getOptionValue("alg"));
         }
       if (cline.hasOption("show")) {
         if (cline.hasOption("alg")) {
@@ -107,7 +109,7 @@ public class CLI {
           new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
           System.exit(0);
           }
-        _show = true;
+        setShow(true);
         }
       }
     catch (ParseException e) { 
@@ -121,38 +123,8 @@ public class CLI {
   public static String help() {
     return _help;
    }
-  
-  /** Tell whether running in a quiet mode.
-    * @return Whether running in a quiet mode. */
-  public boolean quiet() {
-    return _quiet;
-   }
-   
-   /** Tell whether Edges should be ignored.
-    * @return Whether Edges should be ignored. */
-  public boolean noedge() {
-    return _noedge;
-   }
-   
-  /** Give the input file name.
-    * @return The input file name. */
-  public String infile() {
-    return _infile;
-   }
-    
-  /** Give the output file name.
-    * @return The output file name. */
-  public String outfile() {
-    return _outfile;
-   }
                                     
-  private static String  _help       = "";                                    
-  private        boolean _quiet      = false;
-  private        boolean _show       = false;
-  private        boolean _noedge     = false;
-  private        String  _infile;
-  private        String  _outfile;
-  private        String  _algorithm;
+  private static String  _help = "";                                    
 
   /** Logging . */
   private static Logger log = Logger.getLogger(CLI.class);

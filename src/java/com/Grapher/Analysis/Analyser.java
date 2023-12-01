@@ -2,31 +2,20 @@ package com.Grapher.Analysis;
 
 import com.Grapher.CustomGraph.CustomEdge;
 import com.Grapher.CustomGraph.CustomVertex;
-import com.Grapher.Apps.CLI;
+import com.Grapher.Apps.Params;
 
 // JGraphT
 import org.jgrapht.Graph;
-import org.jgrapht.ListenableGraph;
-import org.jgrapht.graph.DefaultListenableGraph;
-import org.jgrapht.ext.JGraphXAdapter;
-
-import org.jgrapht.alg.clustering.KSpanningTreeClustering;
-import org.jgrapht.nio.AttributeType;
+import org.jgrapht.graph.AsUndirectedGraph;
 import org.jgrapht.nio.DefaultAttribute;
-
-import org.jgrapht.*;
-import org.jgrapht.alg.connectivity.*;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.*;
-import org.jgrapht.alg.interfaces.*;
-import org.jgrapht.alg.shortestpath.*;
-import org.jgrapht.graph.*;
-
-import java.util.*;
+import org.jgrapht.alg.clustering.KSpanningTreeClustering;
+import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
+import org.jgrapht.alg.interfaces.StrongConnectivityAlgorithm;
+import org.jgrapht.alg.interfaces.ClusteringAlgorithm;
 
 // Java
-import java.awt.Dimension;
-import javax.swing.JFrame;
-import javax.swing.JApplet;
+import java.util.List;
+import java.util.Set;
 
 // Log4J
 import org.apache.log4j.Logger;
@@ -36,9 +25,9 @@ import org.apache.log4j.Logger;
 public class Analyser {
   
   /** Create and associate an algoritm.
-    * @param cli The calling {@link CLI}. */ 
-  public Analyser(CLI cli) {
-    _cli = cli; 
+    * @param params The calling {@link Params}. */ 
+  public Analyser(Params params) {
+    _params = params; 
     }
     
   /** Fill the {@link Graph} to be acted upon.
@@ -47,13 +36,10 @@ public class Analyser {
     _graph = graph;
     }
   
-  /** Apply the algorithms.
-    * @param algorithmName The algorithms to execute.
-    *                      Several algorithms can be specified, separated by <em>:</em>.
-    *                      Algorithm parameters can be specified after <em>/</em> */ 
-  public void apply(String algorithmName) {
+  /** Apply the algorithms. */
+  public void apply() {
     String[] algpar;
-    for (String alg : algorithmName.split(":")) {
+    for (String alg : _params.algorithm().split(":")) {
       algpar = alg.split("/");
       switch (algpar[0]) {
         case "ad":
@@ -149,7 +135,7 @@ public class Analyser {
     
    private Graph<CustomVertex, CustomEdge> _graph;
    
-   private CLI _cli;
+   private Params _params;
    
    private static String[] PCAs = new String[]{"pca00",
                                                "pca01",
