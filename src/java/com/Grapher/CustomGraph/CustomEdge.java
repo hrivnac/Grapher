@@ -3,6 +3,7 @@ package com.Grapher.CustomGraph;
 // JGraphT
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.DefaultAttribute;
 
 // Java
 import java.util.Map;
@@ -52,6 +53,15 @@ public class CustomEdge extends DefaultWeightedEdge {
       return "has";
       }
     return "none";
+    }
+
+  /** Generate the Edge weight.
+    * @return The generated weight. */
+  public double generateWeight() {
+    if (getLbl().equals("distance")) {
+      return new Double(getAttribute("difference").getValue());
+      }
+    return 0;
     }
      
   @Override

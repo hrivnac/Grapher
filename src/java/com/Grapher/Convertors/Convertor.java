@@ -14,7 +14,11 @@ import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.GraphExporter;
 import org.jgrapht.nio.ImportException;
 import org.jgrapht.nio.graphml.GraphMLImporter;
+import org.jgrapht.nio.graphml.GraphMLExporter;
 import org.jgrapht.nio.dot.DOTExporter;
+import org.jgrapht.nio.json.JSONExporter;
+import org.jgrapht.nio.csv.CSVExporter;
+import org.jgrapht.nio.csv.CSVFormat;
 import org.jgrapht.nio.graph6.Graph6Sparse6Exporter;
 import org.jgrapht.nio.matrix.MatrixExporter;
 
@@ -58,7 +62,7 @@ public class Convertor {
       if (infile.endsWith(".graphml")) {
         graph = readGraphML(new FileInputStream(new File(infile)),
                             true,   // directed
-                            false,  // weighted
+                            true,   // weighted
                             false,  // multipleEdges
                             false); // selfLoops
         }
@@ -77,7 +81,7 @@ public class Convertor {
         graph.removeEdge(e);
         }
       }
-   return graph;
+    return graph;
     }
     
   /** Read and execute the conversion. */
@@ -96,6 +100,28 @@ public class Convertor {
         try {
           FileWriter writer = new FileWriter(outfile);
           writer.write(dot);
+          writer.close();
+          }
+        catch (IOException e) {
+          log.error("Cannot write to " + outfile, e);
+          }
+        }
+      else if (outfile.endsWith(".json")) {
+        String json = writeJSON(g);
+        try {
+          FileWriter writer = new FileWriter(outfile);
+          writer.write(json);
+          writer.close();
+          }
+        catch (IOException e) {
+          log.error("Cannot write to " + outfile, e);
+          }
+        }
+      else if (outfile.endsWith(".csv")) {
+        String csv = writeCSV(g);
+        try {
+          FileWriter writer = new FileWriter(outfile);
+          writer.write(csv);
           writer.close();
           }
         catch (IOException e) {
@@ -133,6 +159,18 @@ public class Convertor {
           return;
           }
         }
+      else if (outfile.endsWith(".graphml")) {
+        String graphml = writeGraphML(g);
+        try {
+          FileWriter writer = new FileWriter(outfile);
+          writer.write(graphml);
+          writer.close();
+          }
+        catch (IOException e) {
+          log.error("Cannot write to " + outfile, e);
+          return;
+          }
+        }
       else {
         log.info("Unknwn file type of " + outfile);
         log.info(g);
@@ -152,6 +190,47 @@ public class Convertor {
     * @return      The <em>DOT</em> representation of the {@link Graph}. */
   public String writeDOT(Graph<CustomVertex, CustomEdge> graph) {
     DOTExporter<CustomVertex, CustomEdge> exporter = new DOTExporter<>();
+    exporter.setVertexAttributeProvider((v) -> {
+      Map<String, Attribute> map = new LinkedHashMap<>();
+      map.put("label", DefaultAttribute.createAttribute(v.getName()));
+      return map;
+      });
+    exporter.setEdgeAttributeProvider((e) -> {
+      Map<String, Attribute> map = new LinkedHashMap<>();
+      map.put("label", DefaultAttribute.createAttribute(e.getName()));
+      return map;
+      });
+    Writer writer = new StringWriter();
+    exporter.exportGraph(graph, writer);
+    return writer.toString();
+    }
+    
+  /** Represent {@link Graph} as a <em>CSV</em> string.
+    * @param graph The {@link Graph} to be written out.
+    * @return      The <em>CSV</em> representation of the {@link Graph}. */
+  public String writeCSV(Graph<CustomVertex, CustomEdge> graph) {
+    CSVExporter<CustomVertex, CustomEdge> exporter = new CSVExporter<>(CSVFormat.ADJACENCY_LIST);
+    exporter.setParameter(CSVFormat.Parameter.EDGE_WEIGHTS, true);
+    exporter.setVertexAttributeProvider((v) -> {
+      Map<String, Attribute> map = new LinkedHashMap<>();
+      map.put("label", DefaultAttribute.createAttribute(v.getName()));
+      return map;
+      });
+    exporter.setEdgeAttributeProvider((e) -> {
+      Map<String, Attribute> map = new LinkedHashMap<>();
+      map.put("label", DefaultAttribute.createAttribute(e.getName()));
+      return map;
+      });
+    Writer writer = new StringWriter();
+    exporter.exportGraph(graph, writer);
+    return writer.toString();
+    }
+    
+  /** Represent {@link Graph} as a <em>JSON</em> string.
+    * @param graph The {@link Graph} to be written out.
+    * @return      The <em>JSON</em> representation of the {@link Graph}. */
+  public String writeJSON(Graph<CustomVertex, CustomEdge> graph) {
+    JSONExporter<CustomVertex, CustomEdge> exporter = new JSONExporter<>();
     exporter.setVertexAttributeProvider((v) -> {
       Map<String, Attribute> map = new LinkedHashMap<>();
       map.put("label", DefaultAttribute.createAttribute(v.getName()));
@@ -196,6 +275,17 @@ public class Convertor {
     exporter.exportGraph(graph, writer);
     return writer.toString();
     }  
+    
+  /** Represent {@link Graph} as a <em>GramphML</em> string.
+    * @param graph The {@link Graph} to be written out.
+    * @return      The <em>GraphML</em> representation of the {@link Graph}. */
+  // TBD
+  public String writeGraphML(Graph<CustomVertex, CustomEdge> graph) {
+    GraphExporter<CustomVertex, CustomEdge> exporter = new GraphMLExporter<>();
+    Writer writer = new StringWriter();
+    exporter.exportGraph(graph, writer);
+    return writer.toString();
+    }  
          
   // Readers -------------------------------------------------------------------  
     
@@ -211,14 +301,21 @@ public class Convertor {
                                                      boolean     weighted,
                                                      boolean     multipleEdges,
                                                      boolean     selfLoops) {
-    return readGraphML(input,
-                       directed,
-                       weighted,
-                       multipleEdges,
-                       selfLoops,
-                       new HashMap<CustomVertex, Map<String, Attribute>>(),
-                       new HashMap<CustomEdge,   Map<String, Attribute>>());
-      }
+    Graph<CustomVertex, CustomEdge> graph = readGraphML(input,
+                                            directed,
+                                            weighted,
+                                            multipleEdges,
+                                            selfLoops,
+                                            new HashMap<CustomVertex, Map<String, Attribute>>(),
+                                            new HashMap<CustomEdge,   Map<String, Attribute>>());
+      if (weighted) {
+        log.info("Generating weights ...");
+        for (CustomEdge e : graph.edgeSet()) {        
+          graph.setEdgeWeight(e, e.generateWeight());
+          }
+        }
+     return graph;
+     }
 
   /** Create {@link Graph} from <em>GraphML</em> {@link InputStream}.
     * @param input            The {@link InputStream} to read from.
@@ -258,7 +355,7 @@ public class Convertor {
                           .buildGraph();
       }
     GraphMLImporter<CustomVertex, CustomEdge> importer = createGraphMLImporter(vertexAttributes, edgeAttributes);
-    //importer.setEdgeWeightAttributeName("myvalue");        
+    importer.setEdgeWeightAttributeName("weight");        
     importer.importGraph(g, input);
     log.info("Imported graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] from " + _params.infile());
     return g;

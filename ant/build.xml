@@ -160,6 +160,8 @@
       <zipfileset includes="**/*" src="${jgrapht_io_jar}"             excludes="META-INF/*"/>
       <zipfileset includes="**/*" src="${jgrapht_ext_jar}"            excludes="META-INF/*"/>
       <zipfileset includes="**/*" src="${jgraphx_jar}"                excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${text_jar}"                   excludes="META-INF/*"/>
+      <zipfileset includes="**/*" src="${lang3_jar}"                  excludes="META-INF/*"/>
       <zipfileset includes="**/*" src="${jheaps_jar}"                 excludes="META-INF/*"/>
       <manifest>
         <attribute name="Created-By" value="${user.name}"/>

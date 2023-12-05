@@ -69,7 +69,7 @@ public class CLI extends Params {
                                    .withArgName("infile")
                                    .create("i"));
     options.addOption(OptionBuilder.withLongOpt("out")
-                                   .withDescription("output file name [.dot|.mat|.g6]")
+                                   .withDescription("output file name [.dot|.mat|.g6|csv|json|graphml]")
                                    .hasArg()
                                    .withArgName("outfile")
                                    .create("o"));
