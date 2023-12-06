@@ -2,6 +2,7 @@ package com.Grapher.CustomGraph;
 
 // JGraphT
 import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.AttributeType;
 
 // Java
 import java.util.Map;
@@ -69,6 +70,9 @@ public class CustomVertex {
   public void putAttribute(String name,
                            Attribute value) {
     _attributes.put(name, value);
+    if (!_attributesReg.containsKey(name)) {
+      _attributesReg.put(name, value.getType());
+      }
     }
 
   /** Give the Vertex id.
@@ -106,6 +110,12 @@ public class CustomVertex {
     return "none";
     }
     
+  /** Give all registered {@link Attribute}s.
+    * @return The registered {@link Attribute}s. */
+  public static Map<String, AttributeType> attributesReg() {
+    return _attributesReg;
+    }
+    
   @Override
   public String toString() {
     return getLbl() + "(" + _id + ")" + ":" + getName();
@@ -116,6 +126,8 @@ public class CustomVertex {
   private static int _gid = 0;
   
   private Map<String, Attribute> _attributes = new HashMap<>();
+  
+  private static Map<String, AttributeType> _attributesReg = new HashMap<>();
         
   /** Logging . */
   private static Logger log = Logger.getLogger(CustomVertex.class);

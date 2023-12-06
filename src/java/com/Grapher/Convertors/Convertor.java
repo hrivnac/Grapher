@@ -10,6 +10,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.AsUndirectedGraph;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.GraphExporter;
 import org.jgrapht.nio.ImportException;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.function.Function;
 import java.util.LinkedHashMap;
 
 // Log4J
@@ -279,43 +281,15 @@ public class Convertor {
   /** Represent {@link Graph} as a <em>GramphML</em> string.
     * @param graph The {@link Graph} to be written out.
     * @return      The <em>GraphML</em> representation of the {@link Graph}. */
-  // TBD
   public String writeGraphML(Graph<CustomVertex, CustomEdge> graph) {
-    GraphExporter<CustomVertex, CustomEdge> exporter = new GraphMLExporter<>();
+    GraphExporter<CustomVertex, CustomEdge> exporter = createGraphMLExporter();
     Writer writer = new StringWriter();
     exporter.exportGraph(graph, writer);
     return writer.toString();
     }  
          
-  // Readers -------------------------------------------------------------------  
+  // GraphML -------------------------------------------------------------------  
     
-  /** Create {@link Graph} from <em>GraphML</em> {@link InputStream}.
-    * @param input         The {@link InputStream} to read from.
-    * @param directed      Whether {@link Graph} is directed.
-    * @param weighted      Whether {@link Graph} is weighted.
-    * @param multipleEdges Whether {@link Graph} has multi-edges.
-    * @param selfLoops     Whether {@link Graph} has self-loops.
-    * @return              The created {@link Graph}. */
-  public Graph<CustomVertex, CustomEdge> readGraphML(InputStream input,
-                                                     boolean     directed,
-                                                     boolean     weighted,
-                                                     boolean     multipleEdges,
-                                                     boolean     selfLoops) {
-    Graph<CustomVertex, CustomEdge> graph = readGraphML(input,
-                                            directed,
-                                            weighted,
-                                            multipleEdges,
-                                            selfLoops,
-                                            new HashMap<CustomVertex, Map<String, Attribute>>(),
-                                            new HashMap<CustomEdge,   Map<String, Attribute>>());
-      if (weighted) {
-        log.info("Generating weights ...");
-        for (CustomEdge e : graph.edgeSet()) {        
-          graph.setEdgeWeight(e, e.generateWeight());
-          }
-        }
-     return graph;
-     }
 
   /** Create {@link Graph} from <em>GraphML</em> {@link InputStream}.
     * @param input            The {@link InputStream} to read from.
@@ -323,17 +297,13 @@ public class Convertor {
     * @param weighted         Whether {@link Graph} is weighted.
     * @param multipleEdges    Whether {@link Graph} has multi-edges.
     * @param selfLoops        Whether {@link Graph} has self-loops.
-    * @param vertexAttributes The {@link Map} of {@link CustomVertex} attributes to be filled.
-    * @param edgeAttributes   The {@link Map} of {@link CustomEdge} attributes to be filled.
     * @return                 The created {@link Graph}. */
-  public Graph<CustomVertex, CustomEdge> readGraphML(InputStream                               input,
-                                                     boolean                                   directed,
-                                                     boolean                                   weighted,
-                                                     boolean                                   multipleEdges,
-                                                     boolean                                   selfLoops,
-                                                     Map<CustomVertex, Map<String, Attribute>> vertexAttributes,
-                                                     Map<CustomEdge,   Map<String, Attribute>> edgeAttributes) throws ImportException{
-    Graph<CustomVertex, CustomEdge> g;
+  public Graph<CustomVertex, CustomEdge> readGraphML(InputStream input,
+                                                     boolean     directed,
+                                                     boolean     weighted,
+                                                     boolean     multipleEdges,
+                                                     boolean     selfLoops) throws ImportException{
+    Graph<CustomVertex, CustomEdge> g;                          
     if (directed) {
       g = GraphTypeBuilder.directed()
                           .allowingMultipleEdges(multipleEdges)
@@ -354,28 +324,25 @@ public class Convertor {
                           .edgeClass(CustomEdge.class)
                           .buildGraph();
       }
-    GraphMLImporter<CustomVertex, CustomEdge> importer = createGraphMLImporter(vertexAttributes, edgeAttributes);
+    GraphMLImporter<CustomVertex, CustomEdge> importer = createGraphMLImporter();
     importer.setEdgeWeightAttributeName("weight");        
     importer.importGraph(g, input);
+    if (weighted) {
+      log.info("Generating weights ...");
+      for (CustomEdge e : g.edgeSet()) {        
+        g.setEdgeWeight(e, e.generateWeight());
+        }
+      }
     log.info("Imported graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] from " + _params.infile());
     return g;
     }
 
   /** Create {@link GraphMLImporter}.
-    * @param vertexAttributes The {@link CustomVertex} attributes to fill.
-    * @param edgeAttributes   The {@link CustomEdge} attributes to fill.
     * @return                 The created {@link GraphMLImporter}. */
-  public GraphMLImporter<CustomVertex, CustomEdge> createGraphMLImporter(Map<CustomVertex, Map<String, Attribute>> vertexAttributes,
-                                                                         Map<CustomEdge,   Map<String, Attribute>> edgeAttributes) {
+  public GraphMLImporter<CustomVertex, CustomEdge> createGraphMLImporter() {
     GraphMLImporter<CustomVertex, CustomEdge> importer = new GraphMLImporter<>();
     importer.addVertexAttributeConsumer((k, a) -> {
       CustomVertex vertex = k.getFirst();
-      Map<String, Attribute> attrs = vertexAttributes.get(vertex);
-      if (attrs == null) {
-        attrs = new HashMap<>();
-        vertexAttributes.put(vertex, attrs);
-        }
-      attrs.put(k.getSecond(), a);
       vertex.putAttribute(k.getSecond(), a);
       });
     importer.addEdgeAttributeConsumer((k, a) -> {
@@ -384,17 +351,53 @@ public class Convertor {
         log.debug("Edge ignored: "  + k + " -> " + a);
         }
       else {
-        Map<String, Attribute> attrs = edgeAttributes.get(edge);
-        if (attrs == null) {
-          attrs = new HashMap<>();
-          edgeAttributes.put(edge, attrs);
-          }
-        attrs.put(k.getSecond(), a);
         edge.putAttribute(k.getSecond(), a);
         }
       });
     return importer;    
     }    
+    
+  /** Create {@link GraphMLExporter}.
+    * @return The created {@link GraphMLExporter}. */
+  public GraphMLExporter<CustomVertex, CustomEdge> createGraphMLExporter() {    
+    GraphMLExporter<CustomVertex, CustomEdge> exporter = new GraphMLExporter<>();
+    exporter.setVertexAttributeProvider(new Function<CustomVertex, Map<String, Attribute>>() {
+                                          @Override
+                                          public Map<String, Attribute> apply(CustomVertex vertex) {
+                                            return vertex.getAttributes();
+                                            }
+                                          @Override
+                                          public <V> Function<V, Map<String, Attribute>> compose(Function<? super V, ? extends CustomVertex> before) {
+                                            return Function.super.compose(before);
+                                            }
+                                          @Override
+                                          public <V> Function<CustomVertex, V> andThen(Function<? super Map<String, Attribute>, ? extends V> after) {
+                                            return Function.super.andThen(after);
+                                            }
+                                          });
+    exporter.setEdgeAttributeProvider(new Function<CustomEdge, Map<String, Attribute>>() {
+                                          @Override
+                                          public Map<String, Attribute> apply(CustomEdge edge) {
+                                            return edge.getAttributes();
+                                            }
+                                          @Override
+                                          public <V> Function<V, Map<String, Attribute>> compose(Function<? super V, ? extends CustomEdge> before) {
+                                            return Function.super.compose(before);
+                                            }
+                                          @Override
+                                          public <V> Function<CustomEdge, V> andThen(Function<? super Map<String, Attribute>, ? extends V> after) {
+                                            return Function.super.andThen(after);
+                                            }
+                                          });
+    exporter.setExportVertexLabels(false);
+    exporter.setExportEdgeLabels(false);
+    exporter.setExportEdgeWeights(false);
+    //exporter.setVertexLabelAttributeName​("labelV");
+    //exporter.setEdgeLabelAttributeName​("labelE");
+    CustomVertex.attributesReg().entrySet().stream().forEach(a -> exporter.registerAttribute(a.getKey(), GraphMLExporter.AttributeCategory.NODE, a.getValue()));
+    CustomEdge.attributesReg(  ).entrySet().stream().forEach(a -> exporter.registerAttribute(a.getKey(), GraphMLExporter.AttributeCategory.EDGE, a.getValue()));
+    return exporter;
+    }
   
   private Params _params;
     

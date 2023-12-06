@@ -3,6 +3,7 @@ package com.Grapher.CustomGraph;
 // JGraphT
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 
 // Java
@@ -35,6 +36,9 @@ public class CustomEdge extends DefaultWeightedEdge {
   public void putAttribute(String name,
                            Attribute value) {
     _attributes.put(name, value);
+    if (!_attributesReg.containsKey(name)) {
+      _attributesReg.put(name, value.getType());
+      }
     }
 
   /** Give the Edge label (type).
@@ -63,6 +67,12 @@ public class CustomEdge extends DefaultWeightedEdge {
       }
     return 0;
     }
+    
+  /** Give all registered {@link Attribute}s.
+    * @return The registered {@link Attribute}s. */
+  public static Map<String, AttributeType> attributesReg() {
+    return _attributesReg;
+    }
      
   @Override
   public String toString() {
@@ -70,6 +80,8 @@ public class CustomEdge extends DefaultWeightedEdge {
     }
     
   private Map<String, Attribute> _attributes = new HashMap<>();
+  
+  private static Map<String, AttributeType> _attributesReg = new HashMap<>();
         
   /** Logging . */
   private static Logger log = Logger.getLogger(CustomEdge.class);
