@@ -92,7 +92,11 @@ public class Analyser {
       }
     }
     
-   /** Add distances between {@link CustomVertex}s. */
+   /** Add distances between {@link CustomVertex}s.
+     * @param vertexLbl                The label of the {@link CustomVertex}s to connect with distances.
+     * @param edgeLbl                  The label of the new {@link CustomEdge}.
+     * @param edgeAttributeName        The name of the new {@link CustomEdge} attribute carrying the distance value.
+     * @param differenceAttributeNames The names of {@link CustomVertex} attributes to be used to calculate the distance. */
    public void addDistances(String   vertexLbl,
                             String   edgeLbl,
                             String   edgeAttributeName,
@@ -121,9 +125,10 @@ public class Analyser {
      }
      
    /** Give the difference between {@link CustomVertex}s.
-     * @param v1 The first {@link CustomVertex}.
-     * @param v2 The second {@link CustomVertex}.
-     * @return   The quadratic distance. */
+     * @param v1                       The first {@link CustomVertex}.
+     * @param v2                       The second {@link CustomVertex}.
+     * @param differenceAttributeNames The names of {@link CustomVertex} attributes to be used to calculate the distance.
+     * @return                         The quadratic distance. */
    private double difference(CustomVertex v1,
                              CustomVertex v2,
                              String[]     differenceAttributeNames) {
