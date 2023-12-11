@@ -74,7 +74,7 @@ public class CLI extends Params {
                                    .withArgName("outfile")
                                    .create("o"));
     options.addOption(OptionBuilder.withLongOpt("alg")
-                                   .withDescription("apply algorithm (instead of justconverting)\n[sc = Strong Connectivity | cl = Clustering | ad = adding distances]]\nseveral algorithms can be separated by :\nalgorithm arguments can be supplied after /")
+                                   .withDescription("apply algorithm (instead of just converting)\n[sc = Strong Connectivity | cl = Clustering | ad = adding distances]]\nseveral algorithms can be separated by ;\nalgorithm arguments can be supplied after ,")
                                    .hasArg()
                                    .withArgName("algoritm")
                                    .create("a"));

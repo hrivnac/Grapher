@@ -290,7 +290,6 @@ public class Convertor {
          
   // GraphML -------------------------------------------------------------------  
     
-
   /** Create {@link Graph} from <em>GraphML</em> {@link InputStream}.
     * @param input            The {@link InputStream} to read from.
     * @param directed         Whether {@link Graph} is directed.

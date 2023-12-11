@@ -96,8 +96,8 @@ public class CustomVertex {
   /** Give the Vertex name.
     * @return The Vertex name. */
   public String getName() {
-    if (getLbl().equals("source")) {
-      return getAttribute("objectId").getValue();
+    if (getLbl().equals("alert")) {
+      return getAttribute("objectId").getValue() + "_" + getAttribute("jd").getValue();
       }
     else if (getLbl().equals("PCA")) {
       if (getAttribute("objectId") != null) {

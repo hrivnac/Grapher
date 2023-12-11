@@ -39,11 +39,14 @@ public class Analyser {
   /** Apply the algorithms. */
   public void apply() {
     String[] algpar;
-    for (String alg : _params.algorithm().split(":")) {
-      algpar = alg.split("/");
+    for (String alg : _params.algorithm().split(";")) {
+      algpar = alg.split(",");
       switch (algpar[0]) {
         case "ad":
-          addDistances();
+          addDistances(algpar[1], algpar[2], algpar[3], new String[]{algpar[4]});
+        break;
+        case "aad":
+          addDistances(algpar[1], algpar[2], algpar[3], new String[]{"i:ra", "i:dec"});
         break;
         case "sc":
           applyStrongConnectivity();
@@ -90,22 +93,28 @@ public class Analyser {
     }
     
    /** Add distances between {@link CustomVertex}s. */
-   // TBD: write detailed doc
-   public void addDistances() {
-   log.info("Adding distances ...");
+   public void addDistances(String   vertexLbl,
+                            String   edgeLbl,
+                            String   edgeAttributeName,
+                            String[] differenceAttributeNames) {
+     log.info("Adding distances between " + vertexLbl + ".[" + String.join(",", differenceAttributeNames) + "] recorded as " + edgeLbl + "." + edgeAttributeName);
      CustomEdge e;
      int n1 = 0;
      int n2 = 0;
      for (CustomVertex v1 : _graph.vertexSet()) {
-       n1++;
-       n2 = 0;
-       for (CustomVertex v2 : _graph.vertexSet()) {
-         n2++;
-         if (n2 > n1) {
-           e = new CustomEdge();
-           e.putAttribute("difference", DefaultAttribute.createAttribute(difference(v1, v2)));
-           e.putAttribute("labelE",     DefaultAttribute.createAttribute("distance"        ));
-           _graph.addEdge(v1, v2, e);
+       if (v1.getLbl().equals(vertexLbl)) {
+         n1++;
+         n2 = 0;
+         for (CustomVertex v2 : _graph.vertexSet()) {
+           if (v2.getLbl().equals(vertexLbl)) {
+             n2++;
+             if (n2 > n1) {
+               e = new CustomEdge();
+               e.putAttribute(edgeAttributeName, DefaultAttribute.createAttribute(difference(v1, v2, differenceAttributeNames)));
+               e.putAttribute("labelE",          DefaultAttribute.createAttribute(edgeLbl                                                  ));
+               _graph.addEdge(v1, v2, e);
+               }
+             }
            }
          }
        }
@@ -116,13 +125,14 @@ public class Analyser {
      * @param v2 The second {@link CustomVertex}.
      * @return   The quadratic distance. */
    private double difference(CustomVertex v1,
-                             CustomVertex v2) {
+                             CustomVertex v2,
+                             String[]     differenceAttributeNames) {
      double diff = 0;
-     for (String pca : PCAs) {
-       diff += Math.pow(Double.valueOf(v1.getAttribute(pca).getValue()) - 
-                        Double.valueOf(v2.getAttribute(pca).getValue()), 2);
+     for (String x : differenceAttributeNames) {
+       diff += Math.pow(Double.valueOf(v1.getAttribute(x).getValue()) - 
+                        Double.valueOf(v2.getAttribute(x).getValue()), 2);
        }
-     return Math.sqrt(diff);      
+     return Math.sqrt(diff);   
      }
      
 // =============================================================================     
