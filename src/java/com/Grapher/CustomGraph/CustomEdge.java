@@ -17,6 +17,42 @@ import org.apache.log4j.Logger;
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
 public class CustomEdge extends DefaultWeightedEdge {
 
+  /** Create new Edge from the default id. */
+  public CustomEdge() {
+    this(_gid++);
+    }
+
+  /** Create new Edge from the supplied id.
+    * @param id The supplied Edge id. */
+  public CustomEdge(int id) {
+    _id  = id;
+    }
+
+  @Override
+  public int hashCode() {
+    return _id;
+    }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+      }
+    if (obj == null) {
+      return false;
+      }
+    if (getClass() != obj.getClass()) {
+      return false;
+      }
+    CustomEdge other = (CustomEdge)obj;
+    if (_id == 0) {
+      return other._id == 0;
+      }
+    else {
+      return _id == other._id;
+      }
+    }
+
   /** Give {@link Map} of all {@link Attribute}s.
     * @return The {@link Map} of all {@link Attribute}s. */
   public Map<String, Attribute> getAttributes() {
@@ -39,6 +75,18 @@ public class CustomEdge extends DefaultWeightedEdge {
     if (!_attributesReg.containsKey(name)) {
       _attributesReg.put(name, value.getType());
       }
+    }
+
+  /** Give the Edge id.
+    * @return The Edge id. */
+  public int getId() {
+    return _id;
+    }
+
+  /** Set the Edge id.
+    * @param id The Edge id. */
+  public void setId(int id) {
+    _id = id;
     }
 
   /** Give the Edge label (type).
@@ -76,8 +124,12 @@ public class CustomEdge extends DefaultWeightedEdge {
      
   @Override
   public String toString() {
-    return getLbl() + ":" + getName();
+    return getLbl() + "(" + _id + ")" + ":" + getName();
     }
+  
+  private int _id;
+  
+  private static int _gid = 0;
     
   private Map<String, Attribute> _attributes = new HashMap<>();
   

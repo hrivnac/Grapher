@@ -337,9 +337,12 @@ public class Convertor {
     }
 
   /** Create {@link GraphMLImporter}.
-    * @return                 The created {@link GraphMLImporter}. */
+    * @return The created {@link GraphMLImporter}. */
   public GraphMLImporter<CustomVertex, CustomEdge> createGraphMLImporter() {
     GraphMLImporter<CustomVertex, CustomEdge> importer = new GraphMLImporter<>();
+    importer.setVertexFactory(id -> {
+      return new CustomVertex(Integer.valueOf(id));
+      });
     importer.addVertexAttributeConsumer((k, a) -> {
       CustomVertex vertex = k.getFirst();
       vertex.putAttribute(k.getSecond(), a);
@@ -347,7 +350,7 @@ public class Convertor {
     importer.addEdgeAttributeConsumer((k, a) -> {
       CustomEdge edge = k.getFirst();
       if (edge == null) {
-        log.debug("Edge ignored: "  + k + " -> " + a);
+        log.info("Edge ignored: "  + k + " -> " + a);
         }
       else {
         edge.putAttribute(k.getSecond(), a);
@@ -361,33 +364,61 @@ public class Convertor {
   public GraphMLExporter<CustomVertex, CustomEdge> createGraphMLExporter() {    
     GraphMLExporter<CustomVertex, CustomEdge> exporter = new GraphMLExporter<>();
     exporter.setVertexAttributeProvider(new Function<CustomVertex, Map<String, Attribute>>() {
-                                          @Override
-                                          public Map<String, Attribute> apply(CustomVertex vertex) {
-                                            return vertex.getAttributes();
-                                            }
-                                          @Override
-                                          public <V> Function<V, Map<String, Attribute>> compose(Function<? super V, ? extends CustomVertex> before) {
-                                            return Function.super.compose(before);
-                                            }
-                                          @Override
-                                          public <V> Function<CustomVertex, V> andThen(Function<? super Map<String, Attribute>, ? extends V> after) {
-                                            return Function.super.andThen(after);
-                                            }
-                                          });
+      @Override
+      public Map<String, Attribute> apply(CustomVertex vertex) {
+        return vertex.getAttributes();
+        }
+      @Override
+      public <V> Function<V, Map<String, Attribute>> compose(Function<? super V, ? extends CustomVertex> before) {
+        return Function.super.compose(before);
+        }
+      @Override
+      public <V> Function<CustomVertex, V> andThen(Function<? super Map<String, Attribute>, ? extends V> after) {
+        return Function.super.andThen(after);
+        }
+      });
+    exporter.setVertexIdProvider(new Function<CustomVertex, String>() {
+      @Override
+      public String apply(CustomVertex vertex) {
+        return String.valueOf(vertex.getId());
+        }
+      @Override
+      public <V> Function<V, String> compose(Function<? super V, ? extends CustomVertex> before) {
+        return Function.super.compose(before);
+        }
+      @Override
+      public <V> Function<CustomVertex, V> andThen(Function<? super String, ? extends V> after) {
+        return Function.super.andThen(after);
+        }
+      });
     exporter.setEdgeAttributeProvider(new Function<CustomEdge, Map<String, Attribute>>() {
-                                          @Override
-                                          public Map<String, Attribute> apply(CustomEdge edge) {
-                                            return edge.getAttributes();
-                                            }
-                                          @Override
-                                          public <V> Function<V, Map<String, Attribute>> compose(Function<? super V, ? extends CustomEdge> before) {
-                                            return Function.super.compose(before);
-                                            }
-                                          @Override
-                                          public <V> Function<CustomEdge, V> andThen(Function<? super Map<String, Attribute>, ? extends V> after) {
-                                            return Function.super.andThen(after);
-                                            }
-                                          });
+      @Override
+      public Map<String, Attribute> apply(CustomEdge edge) {
+        return edge.getAttributes();
+        }
+      @Override
+      public <V> Function<V, Map<String, Attribute>> compose(Function<? super V, ? extends CustomEdge> before) {
+        return Function.super.compose(before);
+        }
+      @Override
+      public <V> Function<CustomEdge, V> andThen(Function<? super Map<String, Attribute>, ? extends V> after) {
+        return Function.super.andThen(after);
+        }
+      });
+    exporter.setEdgeIdProvider(new Function<CustomEdge, String>() {
+      @Override
+      public String apply(CustomEdge edge) {
+        return String.valueOf(edge.getId());
+        }
+      @Override
+      public <V> Function<V, String> compose(Function<? super V, ? extends CustomEdge> before) {
+        return Function.super.compose(before);
+        }
+      @Override
+      public <V> Function<CustomEdge, V> andThen(Function<? super String, ? extends V> after) {
+        return Function.super.andThen(after);
+        }
+      });
     exporter.setExportVertexLabels(false);
     exporter.setExportEdgeLabels(false);
     exporter.setExportEdgeWeights(false);

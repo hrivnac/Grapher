@@ -99,15 +99,15 @@ public class CustomVertex {
     if (getLbl().equals("alert")) {
       return getAttribute("objectId").getValue() + "_" + getAttribute("jd").getValue();
       }
+    else if (getLbl().equals("AlertsOfInterest")) {
+      return getAttribute("alertType").getValue();
+      }
     else if (getLbl().equals("PCA")) {
       if (getAttribute("objectId") != null) {
         return getAttribute("objectId").getValue();
         }
-      else {
-        return "PCA";
-        }
       }
-    return "none";
+    return getLbl();
     }
     
   /** Give all registered {@link Attribute}s.
