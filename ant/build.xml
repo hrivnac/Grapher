@@ -242,12 +242,13 @@
       <Header><![CDATA[<center>]]>Grapher version: ${version}<![CDATA[</center>]]></Header>
       <Footer><![CDATA[<center>Written by: <a href='http://cern.ch/hrivnac'>J.Hrivnac</a></center>]]></Footer>
       <bottom><![CDATA[<a href='https://cern.ch/hrivnac/Activities/Packages/Grapher'>Documentation</a>]]> built ${TODAY} on ${os.name} by ${user.name}</bottom>
-      <group title="Apps"       packages="com.Grapher.Apps*"/>
-      <group title="Convertors" packages="com.Grapher.Convertors*"/>
-      <group title="GUI"        packages="com.Grapher.GUI*"/>
-      <group title="Analysis"   packages="com.Grapher.Analysis*"/>
-      <group title="Utils"      packages="com.Grapher.Utils*"/>
-      <group title="Tests"      packages="com.Grapher.Tests*"/>
+      <group title="Apps"                packages="com.Grapher.Apps*"/>
+      <group title="Convertors"          packages="com.Grapher.Convertors*"/>
+      <group title="GUI"                 packages="com.Grapher.GUI*"/>
+      <group title="Analysis"            packages="com.Grapher.Analysis*"/>
+      <group title="Analysis Algorithms" packages="com.Grapher.Analysis.Algorithms*"/>
+      <group title="Utils"               packages="com.Grapher.Utils*"/>
+      <group title="Tests"               packages="com.Grapher.Tests*"/>
       <link href="http://docs.oracle.com/javase/11/docs/api" packagelistLoc="${javadoc}" offline="true"/>
       <link href="https://commons.apache.org/proper/commons-cli/apidocs"/>
       <link href="https://logging.apache.org/log4j/1.2/apidocs"/>

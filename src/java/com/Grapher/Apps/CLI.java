@@ -62,7 +62,8 @@ public class CLI extends Params {
     options.addOption("h", "help",     false, "show help");
     options.addOption("q", "quiet",    false, "minimal direct feedback");
     options.addOption("s", "show",     false, "show in graphical window (instead of converting)");
-    options.addOption("e", "noedge",   false, "ignore edges");
+    options.addOption("e", "noedge",   false, "ignore input edges");
+    options.addOption("v", "novertex", false, "ignore output edge-less vertices");
     options.addOption(OptionBuilder.withLongOpt("in")
                                    .withDescription("input file name [.graphml]")
                                    .hasArg()
@@ -85,6 +86,9 @@ public class CLI extends Params {
         }
       if (cline.hasOption("noedge")) {
         setNoedge(true);
+        }
+      if (cline.hasOption("novertex")) {
+        setNovertex(true);
         }
       if (cline.hasOption("help")) {
         new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);

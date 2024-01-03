@@ -94,6 +94,14 @@ public class Convertor {
   /** Execute the conversion.
     * @param g The {@link Graph} to convert. */
   public void convert(Graph<CustomVertex, CustomEdge> g) {
+    if (_params.novertex()) {
+      log.info("Removing edge-less Vertices");
+      for (CustomVertex v : new HashSet<>(g.vertexSet())) {
+        if (g.edgesOf(v).size() == 0) {
+          g.removeVertex(v);
+          }
+        }
+      }
     String outfile = _params.outfile();
     if (outfile != null) {
       log.info("Writing graph: " + g.getType() + "[" + g.vertexSet().size() + ", " + g.edgeSet().size() + "] to " + outfile);

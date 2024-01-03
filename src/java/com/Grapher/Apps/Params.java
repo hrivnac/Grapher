@@ -13,19 +13,22 @@ public class Params {
   /** Create and set parameters.
     * @param quiet     Whether running in a quiet mode.
     * @param show      Whether just show GUI.
-    * @param noedge    Whether Edges should be ignored.
+    * @param noedge    Whether Edges should be ignored on import.
+    * @param novertex  Whether edge-less Vertices should be ignored on export.
     * @param infile    The input file name.
     * @param outfile   The output file name.
     * @param algorithm The algorithm(s). */
   public Params(boolean quiet,
                 boolean show,
                 boolean noedge,
+                boolean novertex,
                 String  infile,
                 String  outfile,
                 String  algorithm) {
     _quiet      = quiet;
     _show       = show;
     _noedge     = noedge;
+    _novertex   = novertex;
     _infile     = infile;
     _outfile    = outfile;
     _algorithm  = algorithm;
@@ -43,10 +46,16 @@ public class Params {
     return _show;
     }
   
-   /** Tell whether Edges should be ignored.
-    * @return Whether Edges should be ignored. */
+   /** Tell whether Edges should be ignored on import.
+    * @return Whether Edges should be ignored on import. */
   public boolean noedge() {
     return _noedge;
+    }
+    
+   /** Tell whether edge-less Vertices should be ignored on export.
+    * @return Whether edge-less Vertices should be ignored on export. */
+  public boolean novertex() {
+    return _novertex;
     }
    
   /** Give the input file name.
@@ -79,10 +88,16 @@ public class Params {
     _show = show;
     }
 
-  /** Set whether Edges should be ignored.
-    * @param noedge Whether Edges should be ignored. */
+  /** Set whether Edges should be ignored on import.
+    * @param noedge Whether Edges should be ignored on import. */
   public void setNoedge(boolean noedge) {
     _noedge = noedge;
+    }
+    
+  /** Set whether edge-less Vertices should be ignored on export.
+    * @param noedge Whether edge-less Vertices should be ignored on export. */
+  public void setNovertex(boolean novertex) {
+    _novertex = novertex;
     }
    
   /** Set the input file name.
@@ -106,6 +121,7 @@ public class Params {
   private boolean _quiet      = false;
   private boolean _show       = false;
   private boolean _noedge     = false;
+  private boolean _novertex   = false;
   private String  _infile;
   private String  _outfile;
   private String  _algorithm;

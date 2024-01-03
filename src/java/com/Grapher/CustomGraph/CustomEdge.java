@@ -116,6 +116,11 @@ public class CustomEdge extends DefaultWeightedEdge {
     return 0;
     }
     
+  /** TBD */
+  public double weight() {
+    return getWeight();
+    }
+    
   /** Give all registered {@link Attribute}s.
     * @return The registered {@link Attribute}s. */
   public static Map<String, AttributeType> attributesReg() {
