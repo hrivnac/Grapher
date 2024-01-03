@@ -341,7 +341,7 @@ public class Convertor {
   public GraphMLImporter<CustomVertex, CustomEdge> createGraphMLImporter() {
     GraphMLImporter<CustomVertex, CustomEdge> importer = new GraphMLImporter<>();
     importer.setVertexFactory(id -> {
-      return new CustomVertex(Integer.valueOf(id));
+      return new CustomVertex(Long.valueOf(id));
       });
     importer.addVertexAttributeConsumer((k, a) -> {
       CustomVertex vertex = k.getFirst();

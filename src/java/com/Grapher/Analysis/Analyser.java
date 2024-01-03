@@ -8,10 +8,12 @@ import com.Grapher.Apps.Params;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.AsUndirectedGraph;
 import org.jgrapht.nio.DefaultAttribute;
-import org.jgrapht.alg.clustering.KSpanningTreeClustering;
 import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
 import org.jgrapht.alg.interfaces.StrongConnectivityAlgorithm;
 import org.jgrapht.alg.interfaces.ClusteringAlgorithm;
+import org.jgrapht.alg.clustering.GirvanNewmanClustering;
+import org.jgrapht.alg.clustering.LabelPropagationClustering;
+import org.jgrapht.alg.clustering.KSpanningTreeClustering;
 
 // Java
 import java.util.List;
@@ -46,18 +48,17 @@ public class Analyser {
           addDistances(algpar[1], algpar[2], algpar[3], new String[]{algpar[4]});
         break;
         case "aad":
-          addDistances(algpar[1], algpar[2], algpar[3], new String[]{"i:ra", "i:dec"});
+          addDistances("alert", "distance", "difference", new String[]{"i:ra", "i:dec"});
+        break;
+        case "apd":
+          addDistances("PCA", "distance", "difference", PCAs);
         break;
         case "sc":
           applyStrongConnectivity();
         break;
         case "cl":
-          int nClusters = 1;
-          if (algpar[1] != null) {
-            nClusters = new Integer(algpar[1]);
-            }
-          applyClustering(nClusters);
-        break;
+          applyClustering(algpar[1], new Integer(algpar[2]));
+          break;
         default:
           log.error("Unknown algorithm: " + alg);
         }
@@ -80,11 +81,28 @@ public class Analyser {
     }
     
   /** Apply <em>Clustering</em> algorit_quiethm.
+    * @param alg       The algorithm name.
     * @param nClusters The required number of clusters. */
-  public void applyClustering(int nClusters) { 
+  public void applyClustering(String alg,
+                              int    nClusters) { 
     log.info("Applying Clustering Algorithm ...");
-    log.info("\tsearching for " + nClusters + " clusters");
-    ClusteringAlgorithm<CustomVertex> clAlg = new KSpanningTreeClustering(new AsUndirectedGraph(_graph), nClusters);
+    log.info("\tusingt " + alg + " algoritm");    
+    log.info("\tsearching for " + nClusters + " clusters");    
+    ClusteringAlgorithm<CustomVertex> clAlg;
+    switch (alg) {
+      case "GirvanNewman":
+        clAlg = new GirvanNewmanClustering(_graph, nClusters);
+        break;
+      case "LabelPropagation":
+        clAlg = new LabelPropagationClustering(new AsUndirectedGraph(_graph));
+        break;
+      case "KSpanningTree":
+        clAlg = new KSpanningTreeClustering(new AsUndirectedGraph(_graph), nClusters);
+        break;
+       default:
+         log.error("Unknown algorithm: " + alg);
+         return;
+       }
     List<Set<CustomVertex>> clusterSets = clAlg.getClustering().getClusters();
     log.info("Clusters:");
     for (Set<CustomVertex> cluster : clusterSets) {

@@ -12,6 +12,6 @@ public class CustomEdgeSupplier implements Supplier<CustomEdge> {
     return new CustomEdge(id++);
     }
     
-  private int id = 0;
+  private long id = 0;
 
   }

@@ -22,13 +22,13 @@ public class CustomVertex {
 
   /** Create new Vertex from the supplied id.
     * @param id The supplied Vertex id. */
-  public CustomVertex(int id) {
+  public CustomVertex(long id) {
     _id  = id;
     }
 
   @Override
   public int hashCode() {
-    return _id;
+    return Long.hashCode(_id);
     }
 
   @Override
@@ -77,13 +77,13 @@ public class CustomVertex {
 
   /** Give the Vertex id.
     * @return The Vertex id. */
-  public int getId() {
+  public long getId() {
     return _id;
     }
 
   /** Set the Vertex id.
     * @param id The Vertex id. */
-  public void setId(int id) {
+  public void setId(long id) {
     _id = id;
     }
 
@@ -121,9 +121,9 @@ public class CustomVertex {
     return getLbl() + "(" + _id + ")" + ":" + getName();
     }
   
-  private int _id;
+  private long _id;
   
-  private static int _gid = 0;
+  private static long _gid = 0;
   
   private Map<String, Attribute> _attributes = new HashMap<>();
   

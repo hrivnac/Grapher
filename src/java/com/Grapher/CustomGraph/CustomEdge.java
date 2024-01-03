@@ -24,13 +24,13 @@ public class CustomEdge extends DefaultWeightedEdge {
 
   /** Create new Edge from the supplied id.
     * @param id The supplied Edge id. */
-  public CustomEdge(int id) {
+  public CustomEdge(long id) {
     _id  = id;
     }
 
   @Override
   public int hashCode() {
-    return _id;
+    return Long.hashCode(_id);
     }
 
   @Override
@@ -79,13 +79,13 @@ public class CustomEdge extends DefaultWeightedEdge {
 
   /** Give the Edge id.
     * @return The Edge id. */
-  public int getId() {
+  public long getId() {
     return _id;
     }
 
   /** Set the Edge id.
     * @param id The Edge id. */
-  public void setId(int id) {
+  public void setId(long id) {
     _id = id;
     }
 
@@ -127,9 +127,9 @@ public class CustomEdge extends DefaultWeightedEdge {
     return getLbl() + "(" + _id + ")" + ":" + getName();
     }
   
-  private int _id;
+  private long _id;
   
-  private static int _gid = 0;
+  private static long _gid = 0;
     
   private Map<String, Attribute> _attributes = new HashMap<>();
   

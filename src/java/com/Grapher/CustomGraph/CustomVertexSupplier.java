@@ -12,6 +12,6 @@ public class CustomVertexSupplier implements Supplier<CustomVertex> {
     return new CustomVertex(id++);
     }
     
-  private int id = 0;
+  private long id = 0;
 
   }
