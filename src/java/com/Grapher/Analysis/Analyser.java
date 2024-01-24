@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.LinkedHashSet;
 import java.util.TreeMap;
+import java.util.LinkedHashMap;
+import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toCollection;
 
 // Log4J
@@ -55,22 +57,28 @@ public class Analyser {
         case "add":
           switch (algpar[1]) {
           case "all":
-            addDistances("alert", "distance", "difference", null);
+            addDistances("alert", "distance", "difference", null, 0, 1);
             break;
           case "radec":
-            addDistances("alert", "distance", "difference", new String[]{"ra", "dec"});
+            addDistances("alert", "distance", "difference", new String[]{"ra", "dec"}, 0, 1);
             break;
-          case "isolated":
-            addDistances("alert", "distance", "difference", new String[]{"magnr" , "magpsf", "neargaia", "rf_kn_vs_nonkn", "rf_snia_vs_nonia", "sgscore1", "sigmagnr", "sigmapsf", "snn_sn_vs_all", "snn_snia_vs_nonia"});
+          case "isolation":
+            addDistances("alert", "distance", "difference", ALERTs, new Double(algpar[2]), new Double(algpar[3]));
+            break;
+          case "isolationRD":
+            addDistances("alert", "distance", "difference", RADECs, new Double(algpar[2]), new Double(algpar[3]));
             break;
           case "pca":
-            addDistances("PCA", "distance", "difference", PCAs);
+            addDistances("PCA", "distance", "difference", PCAs, 0, 1);
             break;
           case "immersion":
-            addImmersion("alert", "connectivity", new String[]{"magnr" , "magpsf", "neargaia", "rf_kn_vs_nonkn", "rf_snia_vs_nonia", "sgscore1", "sigmagnr", "sigmapsf", "snn_sn_vs_all", "snn_snia_vs_nonia"});
+            addImmersion("alert", "connectivity", ALERTs, new Integer(algpar[2]));
+            break;
+          case "immersionRD":
+            addImmersion("alert", "connectivity", RADECs, new Integer(algpar[2]));
             break;
           default:
-            addDistances(algpar[1], algpar[2], algpar[3], new String[]{algpar[4]});
+            addDistances(algpar[1], algpar[2], algpar[3], new String[]{algpar[4]}, 0, 1);
             }
           break;
         case "sc":
@@ -151,10 +159,12 @@ public class Analyser {
      * @param vertexLbl                The label of the {@link CustomVertex}s to connect with distances.
      * @param immersionAttributeName   The name of the new attribute carrying the accumulated distance value.
      * @param differenceAttributeNames The names of {@link CustomVertex} attributes to be used to calculate the distance.
-     *                                 All numerical attributes will be used if <tt>null</tt>. */
+     *                                 All numerical attributes will be used if <tt>null</tt>.
+     * @param kn                       The number of most and least immersed {@link CustomVertex}s to report. */
    public void addImmersion(String   vertexLbl,
                             String   immersionAttributeName,
-                            String[] differenceAttributeNames) {
+                            String[] differenceAttributeNames,
+                            int      kn) {
      Set<CustomVertex> vs = _graph.vertexSet();
      if (differenceAttributeNames == null) {
        log.info("Using all attributes");
@@ -191,15 +201,17 @@ public class Analyser {
      double max = Integer.MIN_VALUE;
      CustomVertex minV = null;
      CustomVertex maxV = null;
+     Map<CustomVertex, Double> connectivity = new LinkedHashMap<>();
      for (CustomVertex v1 : vs) {
        if (v1.getLbl().equals(vertexLbl)) {
          sum = 0;
          for (CustomVertex v2 : vs) {
            if (v2.getLbl().equals(vertexLbl)) {
-             sum += difference(v1, v2, differenceAttributeNames, norm);
+             sum += difference(v1, v2, differenceAttributeNames, norm, DifferenceAlg.SQR);
              }
            }
-         v1.putAttribute(immersionAttributeName, DefaultAttribute.createAttribute(sum)); 
+         v1.putAttribute(immersionAttributeName, DefaultAttribute.createAttribute(sum));
+         connectivity.put(v1, sum);
          if (sum < min) {
            min = sum;
            minV = v1;
@@ -210,8 +222,28 @@ public class Analyser {
            }
          }
        }
-     log.info("Most isolated  " + vertexLbl + ": " + minV + " -> " + minV.getAttributes());
-     log.info("Most connected " + vertexLbl + ": " + maxV + " -> " + maxV.getAttributes());
+     Map<CustomVertex, Double> sortedConnectivity = connectivity.
+                                                    entrySet().
+                                                    stream().
+                                                    sorted(Map.Entry.comparingByValue()).
+                                                    collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));  
+     CustomVertex cv;
+     int k  = 0;
+     log.info("Most connected: " + vertexLbl + "s");
+     for (Map.Entry<CustomVertex, Double> entry : sortedConnectivity.entrySet()) {
+       if (k++ < kn) {
+         cv = entry.getKey();
+         log.info("\t" + k + "\t:" + cv + "(connectivity=" + entry.getValue() + ")");
+         }
+       }     
+     k = 0;
+     log.info("Most isolated: " + vertexLbl + "s");
+     for (Map.Entry<CustomVertex, Double> entry : sortedConnectivity.entrySet()) {
+       if ((connectivity.size() - k++) <= kn) {
+         cv = entry.getKey();
+         log.info("\t" + k + "\t:" + cv + "(connectivity=" + entry.getValue() + ")");
+         }
+       }      
      }
     
    /** Add distances between {@link CustomVertex}s.
@@ -219,12 +251,19 @@ public class Analyser {
      * @param edgeLbl                  The label of the new {@link CustomEdge}.
      * @param edgeAttributeName        The name of the new {@link CustomEdge} attribute carrying the distance value.
      * @param differenceAttributeNames The names of {@link CustomVertex} attributes to be used to calculate the distance.
-     *                                 All numerical attributes will be used if <tt>null</tt>. */
+     *                                 All numerical attributes will be used if <tt>null</tt>. 
+     * @param minDifference            The minimal difference for the edge to be recorded (as a part of maximal existing difference).
+     *                                 <code>0</code> means no down limit. 
+     * @param manDifference            The maximal difference for the edge to be recorded (as a part of maximal existing difference).
+     *                                 <code>1</code> means no upper limit. */
    public void addDistances(String   vertexLbl,
                             String   edgeLbl,
                             String   edgeAttributeName,
-                            String[] differenceAttributeNames) {
-     Set<CustomVertex> vs = _graph.vertexSet(); //.stream().limit(2000).collect(toCollection(LinkedHashSet::new));
+                            String[] differenceAttributeNames,
+                            double   minDifference,
+                            double   maxDifference) {
+     Set<CustomVertex> vs = _graph.vertexSet().stream().collect(toCollection(LinkedHashSet::new)); //.stream().limit(2000).collect(toCollection(LinkedHashSet::new));
+     //Set<CustomVertex> vs = _graph.vertexSet().stream().limit(200).collect(toCollection(LinkedHashSet::new)); //.stream().limit(2000).collect(toCollection(LinkedHashSet::new));
      if (differenceAttributeNames == null) {
        log.info("Using all attributes");
        Set<String> allAttributeNames = new TreeSet<>();
@@ -260,25 +299,32 @@ public class Analyser {
      double diff;
      int n1 = 0;
      int n2 = 0;
+     double min = Integer.MAX_VALUE;
      double max = Integer.MIN_VALUE;
      for (CustomVertex v1 : vs) {
-       if (v1.getLbl().equals(vertexLbl)) {
          n1++;
+       if (v1.getLbl().equals(vertexLbl)) {
          n2 = 0;
          for (CustomVertex v2 : vs) {
-           if (v2.getLbl().equals(vertexLbl)) {
              n2++;
+           if (v2.getLbl().equals(vertexLbl)) {
              if (n2 > n1) {
-               diff = difference(v1, v2, differenceAttributeNames, norm);
+               diff = difference(v1, v2, differenceAttributeNames, norm, DifferenceAlg.SQR);
                if (diff > max) {
                  max = diff;
+                 }
+               if (diff == 0) {
+                 log.info(" " + n1 + " " + n2 + " " + v1 + " " + v2);
+                 }
+               if (diff != 0 && diff < min) {
+                 min = diff;
                  }
                }
              }
            }
          }
        }
-     log.info("difference < " + max);
+     log.info("difference in (" + min + ", " + max + ")");
      n1 = 0;
      n2 = 0;
      for (CustomVertex v1 : vs) {
@@ -289,11 +335,11 @@ public class Analyser {
            if (v2.getLbl().equals(vertexLbl)) {
              n2++;
              if (n2 > n1) {
-               diff = difference(v1, v2, differenceAttributeNames, norm);
-               if (diff > max * 0.9) {
+               diff = difference(v1, v2, differenceAttributeNames, norm, DifferenceAlg.SQR);
+               if (diff > max * minDifference && diff < max * maxDifference) {
                  e = new CustomEdge();
-                 e.putAttribute(edgeAttributeName, DefaultAttribute.createAttribute(diff   ));
-                 e.putAttribute("labelE",          DefaultAttribute.createAttribute(edgeLbl));
+                 e.putAttribute(edgeAttributeName, DefaultAttribute.createAttribute(1 / diff));
+                 e.putAttribute("labelE",          DefaultAttribute.createAttribute(edgeLbl ));
                  _graph.addEdge(v1, v2, e);
                  _graph.setEdgeWeight(e, e.generateWeight());
                  }
@@ -308,18 +354,42 @@ public class Analyser {
      * @param v1                       The first {@link CustomVertex}.
      * @param v2                       The second {@link CustomVertex}.
      * @param differenceAttributeNames The names of {@link CustomVertex} attributes to be used to calculate the distance.
-     * @param norm                     The normalisation factors for attributes.
-     * @return                         The quadratic distance. */
+     * @param norm                     The normalisation factors for attributes. Ignored if <tt>null</tt>.
+     * @param alg                      The DifferenceAlg to use to calculate the distance.
+     * @return                         The distance. */
    private double difference(CustomVertex            v1,
                              CustomVertex            v2,
                              String[]                differenceAttributeNames,
-                             TreeMap<String, Double> norm) {
+                             TreeMap<String, Double> norm,
+                             DifferenceAlg           alg) {
      double diff = 0;
+     double val1;
+     double val2;
      for (String x : differenceAttributeNames) {
-       diff += Math.pow(Double.valueOf(v1.getAttribute(x).getValue()) / norm.get(x)- 
-                        Double.valueOf(v2.getAttribute(x).getValue()) / norm.get(x), 2);
+       val1 = Double.valueOf(v1.getAttribute(x).getValue());
+       val2 = Double.valueOf(v2.getAttribute(x).getValue());
+       if (norm !=  null) {
+         val1 = val1 / norm.get(x);
+         val2 = val2 / norm.get(x);
+         }
+       switch(alg) {
+         case LIN:
+           diff += Math.abs(val1 - val2);
+           break;
+         case SQR:
+           diff += Math.pow(val1 - val2, 2);
+           break;
+         case LOG:
+           diff += Math.log1p(Math.abs(val1 - val2));
+           break;
+         }
        }
-     return Math.sqrt(diff);   
+     switch(alg) {
+       case SQR: 
+         return Math.sqrt(diff);  
+       default:
+         return diff;
+       }       
      }
      
 // =============================================================================     
@@ -329,6 +399,8 @@ public class Analyser {
   public Graph<CustomVertex, CustomEdge> graph() {    
     return _graph;
     }
+    
+   public enum DifferenceAlg {LIN, SQR, LOG}; 
     
    private Graph<CustomVertex, CustomEdge> _graph;
    
@@ -359,8 +431,22 @@ public class Analyser {
                                                "pca22",
                                                "pca23",
                                                "pca24"};
+                                               
+  private static String[] ALERTs = new String[]{"magnr" ,
+                                                "magpsf",
+                                                "neargaia",
+                                                "rf_kn_vs_nonkn",
+                                                "rf_snia_vs_nonia",
+                                                "sgscore1",
+                                                "sigmagnr",
+                                                "sigmapsf",
+                                                "snn_sn_vs_all",
+                                                "snn_snia_vs_nonia"}; 
+                                                
+  private static String[] RADECs = new String[]{"ra",
+                                                "dec"};
     
-   /** Logging . */
-    private static Logger log = Logger.getLogger(Analyser.class);
+  /** Logging . */
+  private static Logger log = Logger.getLogger(Analyser.class);
   
   }

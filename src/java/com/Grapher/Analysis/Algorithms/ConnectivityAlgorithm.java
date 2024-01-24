@@ -57,7 +57,7 @@ public class ConnectivityAlgorithm {
      Map<CustomVertex, Double> most = new LinkedHashMap<>();
      int k = 0;
      for (Map.Entry<CustomVertex, Double> entry : _connectivity.entrySet()) {
-       if ((_connectivity.size() - k++) <= n) {
+       if (k++ < n) {
          most.put(entry.getKey(), entry.getValue());
          }
        }
@@ -69,7 +69,7 @@ public class ConnectivityAlgorithm {
      Map<CustomVertex, Double> least = new LinkedHashMap<>();
      int k = 0;
      for (Map.Entry<CustomVertex, Double> entry : _connectivity.entrySet()) {
-       if (k++ < n) {
+       if ((_connectivity.size() - k++) <= n) {
          least.put(entry.getKey(), entry.getValue());
          }
        }

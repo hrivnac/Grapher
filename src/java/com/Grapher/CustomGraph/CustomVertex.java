@@ -96,18 +96,22 @@ public class CustomVertex {
   /** Give the Vertex name.
     * @return The Vertex name. */
   public String getName() {
-    if (getLbl().equals("alert")) {
-      return getAttribute("objectId").getValue() + "_" + getAttribute("jd").getValue();
-      }
-    else if (getLbl().equals("AlertsOfInterest")) {
-      return getAttribute("alertType").getValue();
-      }
-    else if (getLbl().equals("PCA")) {
-      if (getAttribute("objectId") != null) {
+    switch (getLbl()) {
+      case "alert":
+        return getAttribute("objectId").getValue() + "_" + getAttribute("jd").getValue();
+      case "source":
         return getAttribute("objectId").getValue();
-        }
+      case "AlertsOfInterest":
+        return getAttribute("alertType").getValue();
+      case "SourcesOfInterest":
+        return getAttribute("sourceType").getValue();
+      case "PCA":
+        if (getAttribute("objectId") != null) {
+          return getAttribute("objectId").getValue();
+          }
+      default:
+        return getLbl();
       }
-    return getLbl();
     }
     
   /** Give all registered {@link Attribute}s.

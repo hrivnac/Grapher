@@ -30,6 +30,7 @@
     <a href="http://www.java2html.com">J2H</a>,
     <a href="http://vizant.sourceforge.net">Vizant</a>,
     <a href="https://github.com/dspinellis/UMLGraph">UmlGraph</a>,
+    <a href="https://github.com/talsma-ict/umldoclet">UmlDoclet</a>,
     <a href="http://findbugs.sourceforge.net">FindBugs</a>,
     <a href="https://spotbugs.readthedocs.io">SpotBugs</a>,
     CleanImports,
@@ -41,11 +42,35 @@
 <pre>
 $ java -jar Grapher.exe.jar -h
 usage: java -jar Grapher.exe.jar
- -h,--help            show help
- -i,--in <infile>     input file name [.graphml]
- -o,--out <outfile>   output file name [.dot|.mat|.g6]
- -q,--quiet           minimal direct feedback
- -s,--show            show in graphical window (instead of converting)
+ -a,--alg <algoritm>   apply algorithm (instead of just converting)
+                       [sc = Strong Connectivity | cl = Clustering | ad =
+                       adding distances]]
+                       several algorithms can be separated by ;
+                       algorithm arguments can be supplied after ,
+ -e,--noedge           ignore input edges
+ -h,--help             show help
+ -i,--in <infile>      input file name [.graphml]
+ -o,--out <outfile>    output file name [.dot|.mat|.g6|csv|json|graphml]
+ -q,--quiet            minimal direct feedback
+ -s,--show             show in graphical window (instead of converting)
+ -v,--novertex         ignore output edge-less vertices
+</pre>
+Some examples:
+<pre>
+# read input graphml file
+# remove all existing edges
+# apply algorithm:
+#   immersion = evaluate how string are vertices connected to other vertices
+#               attach the connectiveness as them as vertex attribute
+#               show 5 most and least connected vertices
+# write result into graphml file
+grapher -i x.graphml -e -a "add,immersion,5" -o y.graphml
+# apply algorithms:
+#   add = add distance edges calculated as ra-dec spacial distance
+#   cl  = find vertex clusters
+#         using KSpanningTree
+#         find 5 most important clusters
+grapher -i x.graphml -e -a "add,radec;cl,KSpanningTree,5" -o y.graphml
 </pre>
 
 <h4><a name="Bugs-ToDos">Bugs, Inconsistencies and ToDos</a></h4>
@@ -84,6 +109,14 @@ usage: java -jar Grapher.exe.jar
 <h4>Related Documentation</h4>
 <ul>
 <li>...</li>
+</ul>
+
+<h4><a name="Presentations">Presentations</a></h4>
+<ul>
+<li><u>2024:</u>
+    <ul>
+    <li><a href="https://hrivnac.web.cern.ch/hrivnac/Activities/2024/January/GraphsInFink">Graphs in Fink</a> (Fink, IJClab, January'24)</li>
+    </ul></li>
 </ul>
 
 <hr/>

@@ -25,6 +25,10 @@
       </fileset>
     </path>
 
+  <path id="umlDoclet.classpath">
+    <pathelement path="../extlib/umldoclet-2.1.1.jar"/>
+    </path>
+
   <path id="classpath.run">
     <path refid="classpath.build"/>
     </path>
@@ -238,6 +242,9 @@
              source="1.8"
              Overview="../src/java/com/Grapher/overview.html"
              windowtitle="Grapher">
+      <doclet name="nl.talsmasoftware.umldoclet.UMLDoclet" pathref="umlDoclet.classpath">
+        <!--param name="additionalParamName" value="additionalParamValue"/-->
+        </doclet>
       <doctitle><![CDATA[<u>]]>Lomikel<![CDATA[</u>]]></doctitle>
       <Header><![CDATA[<center>]]>Grapher version: ${version}<![CDATA[</center>]]></Header>
       <Footer><![CDATA[<center>Written by: <a href='http://cern.ch/hrivnac'>J.Hrivnac</a></center>]]></Footer>

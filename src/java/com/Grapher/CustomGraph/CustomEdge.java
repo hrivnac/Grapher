@@ -98,13 +98,16 @@ public class CustomEdge extends DefaultWeightedEdge {
   /** Give the Edge name.
     * @return The Edge name. */
   public String getName() {
-    if (getLbl().equals("distance")) {
-      return getAttribute("difference").getValue();
+    switch (getLbl()) {
+      case "distance":
+        return getAttribute("difference").getValue();
+      case "contains":
+        return getAttribute("weight").getValue();
+      case "has":
+        return "has";
+      default:
+        return getLbl();
       }
-    else if (getLbl().equals("has")) {
-      return "has";
-      }
-    return "none";
     }
 
   /** Generate the Edge weight.
