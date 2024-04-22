@@ -140,44 +140,43 @@ public class CLI extends Params {
       CommandLine cline = parser.parse(options, args);
       if (cline.hasOption("script")) {
         setScript(cline.getOptionValue("script"));
+        }      
+      if (cline.hasOption("quiet")) {
+        setQuiet(true);
         }
-      else {
-        if (cline.hasOption("quiet")) {
-          setQuiet(true);
-          }
-        if (cline.hasOption("noedge")) {
-          setNoedge(true);
-          }
-        if (cline.hasOption("novertex")) {
-          setNovertex(true);
-          }
-        if (cline.hasOption("help")) {
-          new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
-          System.exit(0);
-          }
-        if (cline.hasOption("in")) {
-          setInfile(cline.getOptionValue("in"));
-          }
-        else {
-          log.error("No input file specified"); 
-          new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
-          System.exit(0);
-          }
-        if (cline.hasOption("out")) {
-          setOutfile(cline.getOptionValue("out"));
-          }
+      if (cline.hasOption("noedge")) {
+        setNoedge(true);
+        }
+      if (cline.hasOption("novertex")) {
+        setNovertex(true);
+        }
+      if (cline.hasOption("help")) {
+        new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
+        System.exit(0);
+        }
+      if (cline.hasOption("in")) {
+        setInfile(cline.getOptionValue("in"));
+        }
+      else if (script() == null) {
+        log.warn("No input file specified"); 
+        new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
+        System.exit(0);
+        }
+      if (cline.hasOption("out")) {
+        setOutfile(cline.getOptionValue("out"));
+        }
+      if (cline.hasOption("alg")) {
+        setAlgorithm(cline.getOptionValue("alg"));
+        }
+      if (cline.hasOption("show")) {
         if (cline.hasOption("alg")) {
-          setAlgorithm(cline.getOptionValue("alg"));
+          log.error("show and alg options are incompatible"); 
+          new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
+          System.exit(0);
           }
-        if (cline.hasOption("show")) {
-          if (cline.hasOption("alg")) {
-            log.error("show and alg options are incompatible"); 
-            new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
-            System.exit(0);
-            }
-          setShow(true);
-          }
+        setShow(true);
         }
+      
       }
     catch (ParseException e) { 
       new HelpFormatter().printHelp("java -jar Grapher.exe.jar", options);
