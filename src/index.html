@@ -25,7 +25,8 @@
     <a href="https://logging.apache.org/log4j">Log4J</a>,
     <a href="https://commons.apache.org/proper/commons-cli">CLI Parser</a>,
     <a href="https://jgrapht.org">JGraphT</a>,
-    <a href="https://github.com/jgraph/jgraphx">JGraphX</a>
+    <a href="https://github.com/jgraph/jgraphx">JGraphX</a>,
+    <a href="http://cern.ch/hrivnac/Activities/Packages/Lomikel">Lomikel</a>
 <li>Tools:
     <a href="https://ant.apache.org">Ant</a>,
     <a href="http://www.java2html.com">J2H</a>,
@@ -43,7 +44,6 @@
 <h4><a name="CLI">Command Line</a></h4>
 <pre>
 $ java -jar Grapher.exe.jar -h
-usage: java -jar Grapher.exe.jar
  -a,--alg <algoritm>   apply algorithm (instead of just converting)
                        [sc = Strong Connectivity | cl = Clustering | ad =
                        adding distances]]
@@ -54,8 +54,10 @@ usage: java -jar Grapher.exe.jar
  -i,--in <infile>      input file name [.graphml]
  -o,--out <outfile>    output file name [.dot|.mat|.g6|csv|json|graphml]
  -q,--quiet            minimal direct feedback
- -s,--show             show in graphical window (instead of converting)
+ -s,--script <src>     script to run (ignores all other options)
+                       [.groovy|.py]
  -v,--novertex         ignore output edge-less vertices
+ -w,--show             show in graphical window (instead of converting)
 </pre>
 Some examples:
 <pre>

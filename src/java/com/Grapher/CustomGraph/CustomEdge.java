@@ -99,30 +99,23 @@ public class CustomEdge extends DefaultWeightedEdge {
   /** Give the Edge name.
     * @return The Edge name. */
   public String getName() {
-    switch (getLbl()) {
-      case "distance":
-        return getAttribute("difference").getValue();
-      case "contains":
-        return getAttribute("weight").getValue();
-      case "overlaps":
-        return getAttribute("intersection").getValue();
-      case "has":
-        return "has";
-      default:
-        return getLbl();
+    if (_edgeNames.containsKey(getLbl())) {
+      return getAttribute(_edgeNames.get(getLbl())).getValue();
       }
+    return getLbl();
     }
 
   /** Generate the Edge weight.
     * @return The generated weight. */
   public double generateWeight() {
-    if (getLbl().equals("distance")) {
-      return new Double(getAttribute("difference").getValue());
+    if (_edgeWeights.containsKey(getLbl())) {
+      return new Double(getAttribute(_edgeWeights.get(getLbl())).getValue());
       }
-    return 0;
+    return 0.0;
     }
     
-  /** TBD */
+  /** Give Edge weight.
+    * @return The Edge weight. */
   public double weight() {
     return getWeight();
     }
@@ -131,6 +124,18 @@ public class CustomEdge extends DefaultWeightedEdge {
     * @return The registered {@link Attribute}s. */
   public static Map<String, AttributeType> attributesReg() {
     return _attributesReg;
+    }
+    
+  /** Set mapping from Edge labels to Edge names.
+    * @param edgeNames The mapping from Edge labels to Edge names. */
+  public static void setNamesMap(Map<String, String> edgeNames) {
+    _edgeNames = edgeNames;
+    }
+    
+  /** Set mapping from Edge labels to Edge weight atributes.
+    * @param edgeNames The mapping from Edge labels to Edge weight attributess. */
+  public static void setWeightsMap(Map<String, String> edgeWeights) {
+    _edgeWeights = edgeWeights;
     }
      
   @Override
@@ -145,6 +150,10 @@ public class CustomEdge extends DefaultWeightedEdge {
   private Map<String, Attribute> _attributes = new HashMap<>();
   
   private static Map<String, AttributeType> _attributesReg = new HashMap<>();
+  
+  private static Map<String, String> _edgeNames;
+  
+  private static Map<String, String> _edgeWeights;
         
   /** Logging . */
   private static Logger log = LogManager.getLogger(CustomEdge.class);

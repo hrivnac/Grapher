@@ -1,7 +1,14 @@
 package com.Grapher.Utils;
 
+import com.Grapher.CustomGraph.CustomVertex;
+import com.Grapher.CustomGraph.CustomEdge;
+
 // Lomikel
 import com.Lomikel.Utils.NotifierURL;
+
+// Java
+import java.util.Map;
+import java.util.HashMap;
 
 // Log4J
 import org.apache.logging.log4j.Logger;
@@ -18,6 +25,25 @@ public class Init {
       log.debug("Grapher already initialised");
       return;
       }
+    Map<String, String> vertexNames = new HashMap<>();
+    vertexNames.put("source",            "objectId");
+    vertexNames.put("alert",             "jd");
+    vertexNames.put("AlertsOfInterest",  "cls");
+    vertexNames.put("SourcesOfInterest", "cls");
+    CustomVertex.setNamesMap(vertexNames);
+    Map<String, String> edgeNames = new HashMap<>();
+    edgeNames.put("distance",     "difference");
+    edgeNames.put("contains",     "weight");
+    edgeNames.put("deepcontains", "weight");
+    edgeNames.put("overlaps",     "intersection");
+    edgeNames.put("has",          "has");
+    CustomEdge.setNamesMap(edgeNames);
+    Map<String, String> edgeWeights = new HashMap<>();
+    edgeNames.put("distance",     "difference");
+    edgeNames.put("contains",     "weight");
+    edgeNames.put("deepcontains", "weight");
+    edgeNames.put("overlaps",     "intersection");
+    CustomEdge.setWeightsMap(edgeWeights);
     try {
       NotifierURL.notify("", "Grapher", Info.release());
       }

@@ -97,28 +97,22 @@ public class CustomVertex {
   /** Give the Vertex name.
     * @return The Vertex name. */
   public String getName() {
-    switch (getLbl()) {
-      case "alert":
-        return getAttribute("objectId").getValue() + "_" + getAttribute("jd").getValue();
-      case "source":
-        return getAttribute("objectId").getValue();
-      case "AlertsOfInterest":
-        return getAttribute("cls").getValue();
-      case "SourcesOfInterest":
-        return getAttribute("cls").getValue();
-      case "PCA":
-        if (getAttribute("objectId") != null) {
-          return getAttribute("objectId").getValue();
-          }
-      default:
-        return getLbl();
+    if (_vertexNames.containsKey(getLbl())) {
+      return getAttribute(_vertexNames.get(getLbl())).getValue();
       }
+    return getLbl();
     }
     
   /** Give all registered {@link Attribute}s.
     * @return The registered {@link Attribute}s. */
   public static Map<String, AttributeType> attributesReg() {
     return _attributesReg;
+    }
+    
+  /** Set mapping from Vertex labels to Vertex names.
+    * @param vertexNames The mapping from Vertex labels to Vertex names. */
+  public static void setNamesMap(Map<String, String> vertexNames) {
+    _vertexNames = vertexNames;
     }
     
   @Override
@@ -133,6 +127,8 @@ public class CustomVertex {
   private Map<String, Attribute> _attributes = new HashMap<>();
   
   private static Map<String, AttributeType> _attributesReg = new HashMap<>();
+  
+  private static Map<String, String> _vertexNames;
         
   /** Logging . */
   private static Logger log = LogManager.getLogger(CustomVertex.class);
