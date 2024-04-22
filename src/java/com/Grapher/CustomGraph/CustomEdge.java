@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 // Log4J
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** <code>CustomEdge</code> represents graph edge.
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
@@ -103,6 +104,8 @@ public class CustomEdge extends DefaultWeightedEdge {
         return getAttribute("difference").getValue();
       case "contains":
         return getAttribute("weight").getValue();
+      case "overlaps":
+        return getAttribute("intersection").getValue();
       case "has":
         return "has";
       default:
@@ -144,6 +147,6 @@ public class CustomEdge extends DefaultWeightedEdge {
   private static Map<String, AttributeType> _attributesReg = new HashMap<>();
         
   /** Logging . */
-  private static Logger log = Logger.getLogger(CustomEdge.class);
+  private static Logger log = LogManager.getLogger(CustomEdge.class);
   
   }

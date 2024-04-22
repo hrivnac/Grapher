@@ -1,7 +1,8 @@
 package com.Grapher.Utils;
 
 // Log4J
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** <code>Info</code> keeps configuration information
   * about the <em>Grapher</em> setup. It is partially
@@ -33,6 +34,6 @@ public class Info {
   protected static final String _builder        = "@user.name@";
 
   /** Logging . */
-  private static Logger log = Logger.getLogger(Info.class);
+  private static Logger log = LogManager.getLogger(Info.class);
 
   }

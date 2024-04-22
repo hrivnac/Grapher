@@ -41,7 +41,8 @@ import java.util.function.Function;
 import java.util.LinkedHashMap;
 
 // Log4J
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** <code>Convertor</code> converts between Graph formats.
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
@@ -66,7 +67,7 @@ public class Convertor {
                             true,   // directed
                             true,   // weighted
                             false,  // multipleEdges
-                            false); // selfLoops
+                            true);  // selfLoops
         }
       else {
         log.fatal("Unknown file type of " + infile);
@@ -440,7 +441,7 @@ public class Convertor {
   private Params _params;
     
   /** Logging . */
-  private static Logger log = Logger.getLogger(Convertor.class);
+  private static Logger log = LogManager.getLogger(Convertor.class);
 
   }
 

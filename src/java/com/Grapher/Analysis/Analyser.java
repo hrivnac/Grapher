@@ -30,7 +30,8 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toCollection;
 
 // Log4J
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** <code>Analyser</code> applies algorithms to Graph.
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
@@ -252,7 +253,7 @@ public class Analyser {
      * @param edgeAttributeName        The name of the new {@link CustomEdge} attribute carrying the distance value.
      * @param differenceAttributeNames The names of {@link CustomVertex} attributes to be used to calculate the distance.
      *                                 All numerical attributes will be used if <tt>null</tt>. 
-     * @param minDifference            The minimal difference for the edge to be recorded (as a part of maximal existing difference).
+     * @param minDifference            The minimal difference for the edge to be recorded (as a part of minimal existing difference).
      *                                 <code>0</code> means no down limit. 
      * @param manDifference            The maximal difference for the edge to be recorded (as a part of maximal existing difference).
      *                                 <code>1</code> means no upper limit. */
@@ -336,7 +337,7 @@ public class Analyser {
              n2++;
              if (n2 > n1) {
                diff = difference(v1, v2, differenceAttributeNames, norm, DifferenceAlg.SQR);
-               if (diff > max * minDifference && diff < max * maxDifference) {
+               if (diff > min * minDifference && diff < max * maxDifference) {
                  e = new CustomEdge();
                  e.putAttribute(edgeAttributeName, DefaultAttribute.createAttribute(1 / diff));
                  e.putAttribute("labelE",          DefaultAttribute.createAttribute(edgeLbl ));
@@ -447,6 +448,6 @@ public class Analyser {
                                                 "dec"};
     
   /** Logging . */
-  private static Logger log = Logger.getLogger(Analyser.class);
+  private static Logger log = LogManager.getLogger(Analyser.class);
   
   }

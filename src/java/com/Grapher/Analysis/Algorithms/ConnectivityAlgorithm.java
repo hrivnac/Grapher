@@ -28,7 +28,8 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toCollection;
 
 // Log4J
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** <code>ConnectivityAlgorithm</code> calculates the level of connectivity between vertices.
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
@@ -79,6 +80,6 @@ public class ConnectivityAlgorithm {
    private Map<CustomVertex, Double> _connectivity = new LinkedHashMap<>();   
 
    /** Logging . */
-   private static Logger log = Logger.getLogger(ConnectivityAlgorithm.class);
+   private static Logger log = LogManager.getLogger(ConnectivityAlgorithm.class);
   
   }

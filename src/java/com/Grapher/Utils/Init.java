@@ -1,8 +1,11 @@
 package com.Grapher.Utils;
 
+// Lomikel
+import com.Lomikel.Utils.NotifierURL;
+
 // Log4J
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** <code>Init</code> provides common initialisation.
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
@@ -16,8 +19,7 @@ public class Init {
       return;
       }
     try {
-      PropertyConfigurator.configure(Init.class.getClassLoader().getResource("com/Grapher/Utils/log4j.properties"));
-      //NotifierURL.notify("", "Grapher", Info.release());
+      NotifierURL.notify("", "Grapher", Info.release());
       }
     catch (Exception e) {
       System.err.println(e);
@@ -31,6 +33,6 @@ public class Init {
   public static boolean _initialised = false;  
     
   /** Logging . */
-  private static Logger log = Logger.getLogger(Init.class);
+  private static Logger log = LogManager.getLogger(Init.class);
 
   }

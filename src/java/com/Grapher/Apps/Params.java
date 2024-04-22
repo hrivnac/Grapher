@@ -1,7 +1,8 @@
 package com.Grapher.Apps;
 
 // Log4J
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** Runtime parameters.
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
@@ -15,6 +16,7 @@ public class Params {
     * @param show      Whether just show GUI.
     * @param noedge    Whether Edges should be ignored on import.
     * @param novertex  Whether edge-less Vertices should be ignored on export.
+    * @param script    The script (py or groovy) to run.
     * @param infile    The input file name.
     * @param outfile   The output file name.
     * @param algorithm The algorithm(s). */
@@ -22,6 +24,7 @@ public class Params {
                 boolean show,
                 boolean noedge,
                 boolean novertex,
+                String  script,
                 String  infile,
                 String  outfile,
                 String  algorithm) {
@@ -29,6 +32,7 @@ public class Params {
     _show       = show;
     _noedge     = noedge;
     _novertex   = novertex;
+    _script     = script;
     _infile     = infile;
     _outfile    = outfile;
     _algorithm  = algorithm;
@@ -56,6 +60,12 @@ public class Params {
     * @return Whether edge-less Vertices should be ignored on export. */
   public boolean novertex() {
     return _novertex;
+    }
+   
+  /** Give the script file name.
+    * @return The script file name. */
+  public String script() {
+    return _script;
     }
    
   /** Give the input file name.
@@ -100,6 +110,12 @@ public class Params {
     _novertex = novertex;
     }
    
+  /** Set the script file name.
+    * @param infile The script file name. */
+  public void setScript(String script) {
+    _script = script;
+    }
+   
   /** Set the input file name.
     * @param infile The input file name. */
   public void setInfile(String infile) {
@@ -122,12 +138,13 @@ public class Params {
   private boolean _show       = false;
   private boolean _noedge     = false;
   private boolean _novertex   = false;
+  private String  _script;
   private String  _infile;
   private String  _outfile;
   private String  _algorithm;
 
   /** Logging . */
-  private static Logger log = Logger.getLogger(Params.class);
+  private static Logger log = LogManager.getLogger(Params.class);
    
  
   }

@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 // Log4J
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** <code>CustomVertex</code> represents graph vertex.
   * @author <a href="mailto:Julius.Hrivnac@cern.ch">J.Hrivnac</a> */
@@ -102,9 +103,9 @@ public class CustomVertex {
       case "source":
         return getAttribute("objectId").getValue();
       case "AlertsOfInterest":
-        return getAttribute("alertType").getValue();
+        return getAttribute("cls").getValue();
       case "SourcesOfInterest":
-        return getAttribute("sourceType").getValue();
+        return getAttribute("cls").getValue();
       case "PCA":
         if (getAttribute("objectId") != null) {
           return getAttribute("objectId").getValue();
@@ -134,7 +135,7 @@ public class CustomVertex {
   private static Map<String, AttributeType> _attributesReg = new HashMap<>();
         
   /** Logging . */
-  private static Logger log = Logger.getLogger(CustomVertex.class);
+  private static Logger log = LogManager.getLogger(CustomVertex.class);
 
   }
  

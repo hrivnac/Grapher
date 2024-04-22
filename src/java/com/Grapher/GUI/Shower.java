@@ -19,7 +19,8 @@ import javax.swing.JFrame;
 import javax.swing.JApplet;
 
 // Log4J
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** <code>Shower</code> shows Graph in a graphical window.
   * Adapted from
@@ -64,6 +65,6 @@ public class Shower extends JApplet{
   private static final Dimension DEFAULT_SIZE = new Dimension(530, 320);
   
  /** Logging . */
-  private static Logger log = Logger.getLogger(Shower.class);
+  private static Logger log = LogManager.getLogger(Shower.class);
   
   }
