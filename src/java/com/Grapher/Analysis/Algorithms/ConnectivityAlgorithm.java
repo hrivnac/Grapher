@@ -36,7 +36,7 @@ import org.apache.logging.log4j.LogManager;
 public class ConnectivityAlgorithm {
   
   /** Create and run.
-    * @param graph The {@link Graph} to analyse.. */ 
+    * @param graph The {@link Graph} to analyse. */ 
   public ConnectivityAlgorithm(Graph<CustomVertex, CustomEdge> graph) {
     double w;
     for (CustomVertex v : graph.vertexSet()) {
@@ -53,7 +53,9 @@ public class ConnectivityAlgorithm {
     _connectivity = sortedConnectivity;
     }
     
-   /** TBD */
+   /** Give the most connected Vertexes.
+     * @param n The number of entried to give. 
+     * @return  The most connected Vertexes. */
    public Map<CustomVertex, Double> getMostConnected(int n) {
      Map<CustomVertex, Double> most = new LinkedHashMap<>();
      int k = 0;
@@ -65,7 +67,9 @@ public class ConnectivityAlgorithm {
      return most;
      }
      
-   /** TBD */
+   /** Give the least connected Vertexes.
+     * @param n The number of entried to give. 
+     * @return  The least connected Vertexes. */
    public Map<CustomVertex, Double> getLeastConnected(int n) {
      Map<CustomVertex, Double> least = new LinkedHashMap<>();
      int k = 0;

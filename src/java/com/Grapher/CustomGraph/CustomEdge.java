@@ -108,6 +108,12 @@ public class CustomEdge extends DefaultWeightedEdge {
   /** Generate the Edge weight.
     * @return The generated weight. */
   public double generateWeight() {
+    if (getLbl().equals("overlaps")) {
+      double intersection = new Double(getAttribute("intersection").getValue());
+      double sizeIn       = new Double(getAttribute("sizeIn"      ).getValue());
+      double sizeOut      = new Double(getAttribute("sizeOut"     ).getValue());
+      return intersection / sizeIn / sizeOut;
+      }
     if (_edgeWeights.containsKey(getLbl())) {
       return new Double(getAttribute(_edgeWeights.get(getLbl())).getValue());
       }
