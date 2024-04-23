@@ -286,6 +286,8 @@
 			<fileset dir="../src/java" includes="**/doc-files/*"/>
       </copy>
     <javadoc packagenames="*"
+             doclet="org.jboss.apiviz.APIviz"
+             docletpath="../extlib/apiviz-1.3.4.jar:../extlib/jdepend-2.9.5.jar:../extlib/tools-1.8.0.jar"
              sourcepath="../src/java:../build"
              destdir="../doc/JavaDoc"
              author="true"
@@ -418,8 +420,8 @@
         </classpath>
       </taskdef>
     <vizant antfile="../ant/build.xml" outfile="../doc/build.dot"/>
-    <exec executable="dot">
-      <arg line="-Tjpg ../doc//build.dot -o ../doc/build.jpg"/> 
+    <exec executable="${dot}">
+      <arg line="-T jpg ../doc/build.dot -O"/>
       </exec>       
     </target>
 
