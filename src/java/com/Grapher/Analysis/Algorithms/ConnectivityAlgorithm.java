@@ -36,13 +36,16 @@ import org.apache.logging.log4j.LogManager;
 public class ConnectivityAlgorithm {
   
   /** Create and run.
-    * @param graph The {@link Graph} to analyse. */ 
-  public ConnectivityAlgorithm(Graph<CustomVertex, CustomEdge> graph) {
+    * @param graph The {@link Graph} to analyse.
+    * @param weighted Whether to take edge weights into account
+    *                 (or just count each edge as<tt>1</tt>). */
+  public ConnectivityAlgorithm(Graph<CustomVertex, CustomEdge> graph,
+                               boolean                         weighted) {
     double w;
     for (CustomVertex v : graph.vertexSet()) {
       w = 0;
       for (CustomEdge e : graph.edgesOf(v)) {
-        w += e.weight();
+        w += weighted ? e.weight() : 1;
         }
       _connectivity.put(v, w);
       }
@@ -57,20 +60,6 @@ public class ConnectivityAlgorithm {
      * @param n The number of entried to give. 
      * @return  The most connected Vertexes. */
    public Map<CustomVertex, Double> getMostConnected(int n) {
-     Map<CustomVertex, Double> most = new LinkedHashMap<>();
-     int k = 0;
-     for (Map.Entry<CustomVertex, Double> entry : _connectivity.entrySet()) {
-       if (k++ < n) {
-         most.put(entry.getKey(), entry.getValue());
-         }
-       }
-     return most;
-     }
-     
-   /** Give the least connected Vertexes.
-     * @param n The number of entried to give. 
-     * @return  The least connected Vertexes. */
-   public Map<CustomVertex, Double> getLeastConnected(int n) {
      Map<CustomVertex, Double> least = new LinkedHashMap<>();
      int k = 0;
      for (Map.Entry<CustomVertex, Double> entry : _connectivity.entrySet()) {
@@ -79,6 +68,20 @@ public class ConnectivityAlgorithm {
          }
        }
      return least;
+     }
+     
+   /** Give the least connected Vertexes.
+     * @param n The number of entried to give. 
+     * @return  The least connected Vertexes. */
+   public Map<CustomVertex, Double> getLeastConnected(int n) {
+     Map<CustomVertex, Double> most = new LinkedHashMap<>();
+     int k = 0;
+     for (Map.Entry<CustomVertex, Double> entry : _connectivity.entrySet()) {
+       if (k++ < n) {
+         most.put(entry.getKey(), entry.getValue());
+         }
+       }
+     return most;
      }
     
    private Map<CustomVertex, Double> _connectivity = new LinkedHashMap<>();   

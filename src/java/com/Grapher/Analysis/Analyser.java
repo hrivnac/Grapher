@@ -89,7 +89,7 @@ public class Analyser {
           applyClustering(algpar[1], new Integer(algpar[2]));
           break;
         case "co":
-          applyConnectivity(new Integer(algpar[1]));
+          applyConnectivity(new Integer(algpar[1]), new Boolean(algpar[2]));
           break;
         default:
           log.error("Unknown algorithm: " + alg);
@@ -112,10 +112,14 @@ public class Analyser {
       }
     }
     
-  /** Apply <em>Connectivity</em> algorithm. */
-  public void applyConnectivity(int n) {            
+  /** Apply <em>Connectivity</em> algorithm.
+    * @param n        The number of most and least connected vertexes to show.
+    * @param weighted Whether to take edge weights into account
+    *                 (or just count each edge as<tt>1</tt>). */
+  public void applyConnectivity(int     n,
+                                boolean weighted) {            
     log.info("Applying Connectivity Algorithm ...");
-    ConnectivityAlgorithm coAlg = new ConnectivityAlgorithm(_graph);
+    ConnectivityAlgorithm coAlg = new ConnectivityAlgorithm(_graph, weighted);
     log.info("Most Connected:");
     for (Map.Entry<CustomVertex, Double> entry : coAlg.getMostConnected(n).entrySet()) {
       log.info("\t" + entry);

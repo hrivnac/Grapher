@@ -301,7 +301,7 @@
       <doclet name="nl.talsmasoftware.umldoclet.UMLDoclet" pathref="umlDoclet.classpath">
         <!--param name="additionalParamName" value="additionalParamValue"/-->
         </doclet>
-      <doctitle><![CDATA[<u>]]>Lomikel<![CDATA[</u>]]></doctitle>
+      <doctitle><![CDATA[<u>]]>Grapher<![CDATA[</u>]]></doctitle>
       <Header><![CDATA[<center>]]>Grapher version: ${version}<![CDATA[</center>]]></Header>
       <Footer><![CDATA[<center>Written by: <a href='http://cern.ch/hrivnac'>J.Hrivnac</a></center>]]></Footer>
       <bottom><![CDATA[<a href='https://cern.ch/hrivnac/Activities/Packages/Grapher'>Documentation</a>]]> built ${TODAY} on ${os.name} by ${user.name}</bottom>
@@ -338,7 +338,7 @@
              doctitle="&lt;u&gt;Grapher&lt;/u&gt;"
              header="&lt;center&gt;Grapher version: ${version}&lt;/center&gt;"
              footer="Written by: &lt;a href='http://cern.ch/hrivnac'&gt;J.Hrivnac&lt;/a&gt;&lt;br/&gt;&lt;a href='https://cern.ch/hrivnac/Activities/Packages/Grapher'&gt;Documentation&lt;/a&gt; built ${TODAY} on ${os.name} by ${user.name}"
-             overview="../src/groovy/com/Lomikel/overview.html"
+             overview="../src/groovy/com/Grapher/overview.html"
              private="true">
       <link href="http://docs.oracle.com/javase/11/docs/api"/>
       <link href="http://docs.groovy-lang.org/latest/html/api"/>
