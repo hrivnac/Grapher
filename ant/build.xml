@@ -57,9 +57,7 @@
   <taskdef name="groovydoc"
          classname= "org.codehaus.groovy.ant.Groovydoc">
     <classpath>
-      <fileset file="${groovy_jar}"/>
-      <fileset file="${groovy_ant_jar}"/>
-      <fileset file="${groovy_groovydoc_jar}"/>
+      <fileset dir="${groovy_dir}/lib" includes="*.jar"/>
       </classpath>
     </taskdef>
 
@@ -368,6 +366,7 @@
       </delete>
  		<copy todir="${doc}" force="true">
 			<fileset dir="../doc" includes="**/*"/>
+			<fileset dir="../dist" includes="*.jar"/>
       </copy>
     </target>
 

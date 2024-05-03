@@ -42,8 +42,11 @@
 </ul>
 
 <h4><a name="CLI">Command Line</a></h4>
-<pre>
-$ java -jar Grapher.exe.jar -h
+<pre style="color:blue; font-size:60%; background-color:#eeeeee">
+# download <a href="Grapher.exe.jar">Grapher.exe.jar</a>
+$ alias grapher='java -jar Grapher.jar'
+$ grapher -h
+usage: java -jar Grapher.exe.jar
  -a,--alg <algoritm>   apply algorithm (instead of just converting)
                        [sc = Strong Connectivity | cl = Clustering | ad =
                        adding distances]]
@@ -58,23 +61,6 @@ $ java -jar Grapher.exe.jar -h
                        [.groovy|.py]
  -v,--novertex         ignore output edge-less vertices
  -w,--show             show in graphical window (instead of converting)
-</pre>
-Some examples:
-<pre>
-# read input graphml file
-# remove all existing edges
-# apply algorithm:
-#   immersion = evaluate how string are vertices connected to other vertices
-#               attach the connectiveness as them as vertex attribute
-#               show 5 most and least connected vertices
-# write result into graphml file
-grapher -i x.graphml -e -a "add,immersion,5" -o y.graphml
-# apply algorithms:
-#   add = add distance edges calculated as ra-dec spacial distance
-#   cl  = find vertex clusters
-#         using KSpanningTree
-#         find 5 most important clusters
-grapher -i x.graphml -e -a "add,radec;cl,KSpanningTree,5" -o y.graphml
 </pre>
 
 <h4><a name="Bugs-ToDos">Bugs, Inconsistencies and ToDos</a></h4>
