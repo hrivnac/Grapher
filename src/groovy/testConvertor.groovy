@@ -5,3 +5,4 @@ cli.setOutfile("AoI.dot");    // or -o AoI.graphml
 convertor = new Convertor(cli);
 convertor.read();
 convertor.convert();
+
