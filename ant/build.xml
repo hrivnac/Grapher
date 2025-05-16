@@ -69,7 +69,7 @@
   <target name="info"
           depends="init"
           description="Create Info class">
-    <mkdir dir="../build/com/Lomikel/Utils"/>
+    <mkdir dir="../build/com/Grapher/Utils"/>
     <copy file="../src/java/com/Grapher/Utils/Info.pre"
           tofile="../build/com/Grapher/Utils/Info.java"/>
     <replace file="../build/com/Grapher/Utils/Info.java" token="@version@"     value="${version}"/>
@@ -332,7 +332,7 @@
              sourcepath="../src/groovy"
              packagenames="com.Grapher.*"
              use="true"
-             windowtitle="Lomikel"
+             windowtitle="Grapher"
              doctitle="&lt;u&gt;Grapher&lt;/u&gt;"
              header="&lt;center&gt;Grapher version: ${version}&lt;/center&gt;"
              footer="Written by: &lt;a href='http://cern.ch/hrivnac'&gt;J.Hrivnac&lt;/a&gt;&lt;br/&gt;&lt;a href='https://cern.ch/hrivnac/Activities/Packages/Grapher'&gt;Documentation&lt;/a&gt; built ${TODAY} on ${os.name} by ${user.name}"
