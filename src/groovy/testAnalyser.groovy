@@ -1,18 +1,22 @@
+import com.Grapher.Utils.Init;
+import com.Grapher.Utils.Params;
 import com.Grapher.Convertors.Convertor;
 import com.Grapher.Analysis.Analyser;
 
-cli.setInfile("AoI.graphml"); // or -i AoI.graphml
-cli.setOutfile("AoI.dot"); // or -o AoI.graphml
-convertor = new Convertor(cli);
+Init.init(false);
+params = new Params();
+params.setInfile("AoI.graphml");
+params.setOutfile("AoI.dot");
+convertor = new Convertor(params);
 
-analyser = new Analyser(cli);
+analyser = new Analyser(params);
 analyser.fill(convertor.read());
-analyser.applyStrongConnectivity();                  // or -a sc and analyser.apply()
-//analyser.applyConnectivity(10);                    // or -a co,10 and analyser.apply()
-//analyser.applyClustering("GirvanNewman", 30);      // or -a cl,GirvanNewman,10 and analyser.apply()
-//analyser.applyClustering("LabelPropagation", 30);  // or -a cl,LabelPropagation and analyser.apply()
-//analyser.applyClustering("KSpanningTree", 30);     // or -a cl,KSpanningTree,10 and analyser.apply()
-
+analyser.applyStrongConnectivity();                 
+//analyser.applyConnectivity(10);                   
+//analyser.applyClustering("GirvanNewman", 30);     
+//analyser.applyClustering("LabelPropagation", 30); 
+//analyser.applyClustering("KSpanningTree", 30);    
+                                                    
 
 
 

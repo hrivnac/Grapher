@@ -207,15 +207,10 @@
   <target name="exe"
           depends="jar"
           description="Create exe JARs">
-    <jar jarfile="../lib/Grapher.exe.jar" index="yes">
+    <jar jarfile="../lib/Grapher-${version}.exe.jar" index="yes">
       <zipfileset includes="**/*" src="../lib/Grapher-${version}.jar"/>
       <zipfileset includes="**/*" src="${lomikel_jar}"/>
-      <zipfileset includes="**/*" src="${jython_jar}"/>
-      <zipfileset includes="**/*" src="${groovy_jar}"/>
-      <zipfileset includes="**/*" src="${groovysh_jar}"/>
-      <zipfileset includes="**/*" src="${log4j_core_jar}"/>
-      <zipfileset includes="**/*" src="${log4j_api_jar}"/>
-      <zipfileset includes="**/*" src="${cli_jar}"/>
+      <zipfileset includes="**/*" src="${lomikel_ext_jar}"/>
       <zipfileset includes="**/*" src="${jgrapht_core_jar}"/>
       <zipfileset includes="**/*" src="${jgrapht_io_jar}"/>
       <zipfileset includes="**/*" src="${jgrapht_ext_jar}"/>
@@ -229,7 +224,8 @@
         <attribute name="AppVersion" value="${version} ${TSTAMP}"/>
         <!--attribute name="Main-Class" value="com.Grapher.Tests.HelloJGraphT"/-->
         <!--attribute name="Main-Class" value="com.Grapher.Tests.HelloJGraphX"/-->
-        <attribute name="Main-Class" value="com.Grapher.Apps.CLI"/>
+        <!--attribute name="Main-Class" value="com.Grapher.Apps.CLI"/-->
+        <attribute name="Main-Class" value="com.Lomikel.Apps.LUC"/>
         </manifest>
       </jar>
     </target>
@@ -303,7 +299,6 @@
       <Header><![CDATA[<center>]]>Grapher version: ${version}<![CDATA[</center>]]></Header>
       <Footer><![CDATA[<center>Written by: <a href='http://cern.ch/hrivnac'>J.Hrivnac</a></center>]]></Footer>
       <bottom><![CDATA[<a href='https://cern.ch/hrivnac/Activities/Packages/Grapher'>Documentation</a>]]> built ${TODAY} on ${os.name} by ${user.name}</bottom>
-      <group title="Apps"                packages="com.Grapher.Apps*"/>
       <group title="Convertors"          packages="com.Grapher.Convertors*"/>
       <group title="GUI"                 packages="com.Grapher.GUI*"/>
       <group title="Analysis"            packages="com.Grapher.Analysis*"/>

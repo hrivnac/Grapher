@@ -1,8 +1,12 @@
+import com.Grapher.Utils.Init;
+import com.Grapher.Utils.Params;
 import com.Grapher.Convertors.Convertor;
 
-cli.setInfile("AoI.graphml"); // or -i AoI.graphml
-cli.setOutfile("AoI.dot");    // or -o AoI.graphml
-convertor = new Convertor(cli);
+Init.init(false);
+params = new Params();
+params.setInfile("AoI.graphml"); 
+params.setOutfile("AoI.dot");    
+convertor = new Convertor(params);
 convertor.read();
 convertor.convert();
 

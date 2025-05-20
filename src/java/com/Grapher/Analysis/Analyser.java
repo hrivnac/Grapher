@@ -2,7 +2,7 @@ package com.Grapher.Analysis;
 
 import com.Grapher.CustomGraph.CustomEdge;
 import com.Grapher.CustomGraph.CustomVertex;
-import com.Grapher.Apps.Params;
+import com.Grapher.Utils.Params;
 import com.Grapher.Analysis.Algorithms.ConnectivityAlgorithm;
 
 // JGraphT
